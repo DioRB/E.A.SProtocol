@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>E.A.S Protocol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+<body>
+
+<main>
+
+    <h1>Grafo</h1>
+
+    <div class="contenedor">
+
+        <div id="cy"></div>
+
+        <aside class="panel">
+
+            <h2>Panel de control</h2>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/grafo.js') }}"></script>
+
+</body>
+</html>
