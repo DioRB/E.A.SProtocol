@@ -22,16 +22,23 @@ class Dijkstra:
     """
 
     @staticmethod
-    def calcular(grafo: Grafo, origen: str, destino: str) -> dict:
+    def calcular(
+        grafo: Grafo,
+        origen: str,
+        destino: str,
+        lambda_confianza: float = 2.0,
+        lambda_riesgo: float = 1.0
+    ) -> dict:
 
-        # 1.VALIDACIONES
+        #VALIDACIONES
+
         if not grafo.existe_nodo(origen):
             raise ValueError(f"El nodo '{origen}' no existe.")
 
         if not grafo.existe_nodo(destino):
             raise ValueError(f"El nodo '{destino}' no existe.")
 
-        #2. ESTRUCTURAS
+        #ESTRUCTURAS
         distancias = {}
         anteriores = {}
         visitados = set()
@@ -45,10 +52,13 @@ class Dijkstra:
 
         distancias[origen] = 0
 
-        heapq.heappush(cola, (0, origen))
+        heapq.heappush(
+            cola,
+            (0, origen)
+        )
 
+        #DIJKSTRA
 
-        # 3. DIJKSTRA
         while cola:
 
             distancia_actual, actual = heapq.heappop(cola)
@@ -59,7 +69,6 @@ class Dijkstra:
             visitados.add(actual)
             orden_visita.append(actual)
 
-            #Registrar visita
             timeline.append({
                 "tipo": "visita",
                 "nodo": actual,
@@ -71,12 +80,31 @@ class Dijkstra:
             if actual == destino:
                 break
 
-            #Recorrer todos los vecinos
             for arista in grafo.obtener_vecinos(actual):
 
                 vecino = arista.fin
+                nodo_vecino = grafo.obtener_nodo(vecino)
 
-                nuevo_costo = distancia_actual + arista.peso
+                penalizacion_confianza = (
+                    lambda_confianza *
+                    (1 - nodo_vecino.nivel_confianza)
+                )
+
+                penalizacion_riesgo = (
+                    lambda_riesgo *
+                    arista.riesgo
+                )
+
+                costo_arista = (
+                    arista.peso
+                    + penalizacion_confianza
+                    + penalizacion_riesgo
+                )
+
+                nuevo_costo = (
+                    distancia_actual
+                    + costo_arista
+                )
 
                 costo_anterior = distancias[vecino]
 
@@ -96,18 +124,41 @@ class Dijkstra:
 
                     actualizado = False
 
-                #Registrar relajación
                 timeline.append({
                     "tipo": "relajacion",
                     "desde": actual,
                     "hasta": vecino,
                     "peso": arista.peso,
-                    "costo_anterior": costo_anterior,
-                    "nuevo_costo": nuevo_costo,
+                    "riesgo": arista.riesgo,
+                    "confianza": nodo_vecino.nivel_confianza,
+                    "penalizacion_confianza": round(
+                        penalizacion_confianza,
+                        3
+                    ),
+
+                    "penalizacion_riesgo": round(
+                        penalizacion_riesgo,
+                        3
+                    ),
+
+                    "costo_arista": round(
+                        costo_arista,
+                        3
+                    ),
+
+                    "costo_anterior": round(
+                        costo_anterior,
+                        3
+                    ) if costo_anterior != float("inf") else "∞",
+
+                    "nuevo_costo": round(
+                        nuevo_costo,
+                        3
+                    ),
                     "actualizado": actualizado
                 })
 
-        # 4. NO EXISTE RUTA
+        #NO EXISTE RUTA
         if distancias[destino] == float("inf"):
 
             return {
@@ -118,26 +169,42 @@ class Dijkstra:
                 "anteriores": anteriores,
                 "timeline": timeline,
                 "mensaje": "No existe una ruta entre los nodos."
+
             }
 
-        # 5.RECONSTRUIR RUTA
+        #RECONSTRUIR RUTA
         ruta = []
 
         actual = destino
 
         while actual is not None:
-
             ruta.append(actual)
             actual = anteriores[actual]
-
         ruta.reverse()
 
-        #6.RETORNAR RESULTADO
+        #RESULTADO
         return {
             "ruta": ruta,
-            "costo": distancias[destino],
+            "costo": round(
+                distancias[destino],
+                3
+            ),
+
             "visitados": orden_visita,
-            "distancias": distancias,
+            "distancias": {
+                nodo: (
+                    round(valor, 3)
+                    if valor != float("inf")
+                    else "∞"
+                )
+                for nodo, valor in distancias.items()
+            },
             "anteriores": anteriores,
-            "timeline": timeline
+            "timeline": timeline,
+            "parametros": {
+                "lambda_confianza": lambda_confianza,
+                "lambda_riesgo": lambda_riesgo
+
+            }
+
         }
