@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify
-from servicios.grafo_servicio import GrafoService
+from app.servicios.grafo_servicio import GrafoService
 
 app = Flask(__name__)
 

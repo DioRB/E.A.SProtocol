@@ -1,6 +1,6 @@
-from modelos.arista import Arista
-from modelos.nodo import Nodo
-from modelos.grafo import Grafo
+from app.modelos.arista import Arista
+from app.modelos.nodo import Nodo
+from app.modelos.grafo import Grafo
 
 class GrafoService:
     @staticmethod
