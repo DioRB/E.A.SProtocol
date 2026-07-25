@@ -1,7 +1,12 @@
 from flask import Flask, render_template, jsonify
-from app.servicios.grafo_servicio import GrafoService
+from app.servicios.simulador import GrafoService
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="frontend/templates",
+    static_folder="frontend/static"
+
+)
 
 @app.route("/")
 def index():
@@ -16,3 +21,5 @@ def grafo():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
