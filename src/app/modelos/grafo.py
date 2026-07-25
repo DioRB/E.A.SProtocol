@@ -21,6 +21,17 @@ class Grafo:
                 if arista.inicio != nodo_id and arista.fin != nodo_id
             ]
 
+    #ARISTAS
+
+    def obtener_arista(self, inicio, fin):
+
+        for arista in self.aristas:
+
+            if arista.inicio == inicio and arista.fin == fin:
+                return arista
+
+        return None
+
     def agregar_arista(self, arista: Arista):
 
         if arista.inicio in self.nodos and arista.fin in self.nodos:
@@ -36,6 +47,9 @@ class Grafo:
             )
         ]
 
+
+    #VECINOS
+
     def obtener_vecinos(self, nodo_id):
 
         vecinos = []
@@ -43,13 +57,21 @@ class Grafo:
         for arista in self.aristas:
 
             if arista.inicio == nodo_id:
-                vecinos.append(arista.fin)
+                vecinos.append(arista)
 
         return vecinos
+
+    #NODOS
 
     def obtener_nodo(self, nodo_id):
 
         return self.nodos.get(nodo_id)
+
+    def existe_nodo(self, nodo_id):
+
+        return nodo_id in self.nodos
+
+    #ENVIAR FUNCIONES
 
     def dictar(self):
 
@@ -65,3 +87,4 @@ class Grafo:
                 for arista in self.aristas
             ]
         }
+
