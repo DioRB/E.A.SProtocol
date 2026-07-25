@@ -1,17 +1,43 @@
 import heapq
+from app.modelos.grafo import Grafo
+
+"""
+Calcula la ruta de menor costo entre dos nodos utilizando el algoritmo de Dijkstra.
+
+Parámetros:
+    grafo (Grafo): Grafo sobre el que se ejecuta el algoritmo.
+    origen (str): Identificador del nodo inicial.
+    destino (str): Identificador del nodo destino.
+
+Retorna:
+    dict:
+        ruta (list): Ruta óptima encontrada.
+        costo (float): Costo total de la ruta.
+        visitados (list): Orden en que se visitaron los nodos.
+        distancias (dict): Distancia mínima calculada a cada nodo.
+        anteriores (dict): Nodo predecesor de cada nodo.
+"""
 
 
 class Dijkstra:
 
     @staticmethod
-    def calcular(grafo, origen, destino):
+    def calcular(grafo: Grafo, origen: str, destino: str) -> dict:
 
+        #1. VALIDACIONES
+        if not grafo.existe_nodo(origen):
+            raise ValueError(f"El nodo '{origen}' no existe.")
+
+        if not grafo.existe_nodo(destino):
+            raise ValueError(f"El nodo '{destino}' no existe.")
+
+        #2. ESTRUCTURAS
         distancias = {}
         anteriores = {}
         visitados = set()
+        orden_visita = []
         cola = []
 
-        #Inicializar estructuras
         for nodo_id in grafo.nodos:
 
             distancias[nodo_id] = float("inf")
@@ -21,6 +47,7 @@ class Dijkstra:
 
         heapq.heappush(cola, (0, origen))
 
+        #3. DIJKSTRA
         while cola:
 
             distancia_actual, actual = heapq.heappop(cola)
@@ -29,11 +56,11 @@ class Dijkstra:
                 continue
 
             visitados.add(actual)
+            orden_visita.append(actual)
 
             if actual == destino:
                 break
 
-            #Recorrer vecinos
             for arista in grafo.obtener_vecinos(actual):
 
                 vecino = arista.fin
@@ -50,7 +77,21 @@ class Dijkstra:
                         (nuevo_costo, vecino)
                     )
 
-        #Reconstruir ruta
+        #4. SI NO HAY RUTA
+        if distancias[destino] == float("inf"):
+
+            return {
+
+                "ruta": [],
+                "costo": None,
+                "visitados": orden_visita,
+                "distancias": distancias,
+                "anteriores": anteriores,
+                "mensaje": "No existe una ruta entre los nodos."
+
+            }
+
+        #5. RECONSTRUIR RUTA
         ruta = []
 
         actual = destino
@@ -62,4 +103,13 @@ class Dijkstra:
 
         ruta.reverse()
 
-        return ruta, distancias[destino]
+        #6. RETORNAR RESULTADO
+        return {
+
+            "ruta": ruta,
+            "costo": distancias[destino],
+            "visitados": orden_visita,
+            "distancias": distancias,
+            "anteriores": anteriores
+
+        }

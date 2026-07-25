@@ -29,11 +29,10 @@ class Simulador:
 #Recorrer el grafo utilizando el algoritmo Dijkstra (Primera prueba)
 grafo = Simulador.crear_grafo_prueba()
 
-ruta, costo = Dijkstra.calcular(
+resultado = Dijkstra.calcular(
     grafo,
     "A",
     "E"
 )
 
-print(ruta)
-print(costo)
+print(resultado)
