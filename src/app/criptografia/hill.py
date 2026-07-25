@@ -22,49 +22,54 @@ def inverso_modular(a, m=26):
             return x
     return None
 
-def determinante(matriz):
+def calcular_determinante(matriz):
+    # Calcula el determinante de la matriz.
+    det = round(np.linalg.det(matriz))                           # np.linalg.det calcula el determinante.
+    return int(det)
+
+def calcular_determinante_mod26(matriz):
     # Calcula el determinante de la matriz en mod 26.
-    # Este valor se usa para verificar si la matriz clave es invertible en módulo 26.
-    det = round(np.linalg.det(matriz)) # np.linalg.det calcula el determinante.
-    return int(det % 26)
+    det = calcular_determinante(matriz)
+    return det % 26
 
 def validacion(matriz):
-    # La matriz clave solo es válida si su determinante es invertible mod 26
-    det = determinante(matriz)
-    return gcd(det, 26) == 1
+    # La matriz clave solo es válida si su determinante es invertible mod 26.
+    det_mod26 = calcular_determinante_mod26(matriz)
+    return gcd(det_mod26, 26) == 1
 
-def matriz_inversa(matriz):
-    # Calcula la inversa de la matriz en mod 26.
-    det = determinante(matriz)
-    determinante_inversa = inverso_modular(det)
+def calcular_matriz_inversa_mod26(matriz):
+    # Calcula la inversa de la matriz y devuelve su valor en mod 26.
+    det_mod26 = calcular_determinante_mod26(matriz)
+    inverso_det_mod26 = inverso_modular(det_mod26)
 
-    if determinante_inversa is None:
-        raise ValueError(f"El determinante {det} no tiene inverso modular, la matriz no es válida como clave")
+    if inverso_det_mod26 is None:
+        raise ValueError(f"El determinante {det_mod26} no tiene inverso modular, la matriz no es válida como clave")
 
     # Se usa la identidad: adj(K) = det(K) * K^-1
     # np.linalg.inv calcula la inversa de la matriz
     # Se multiplica por el determinante para obtener la adjunta
-    adjunta = np.round(det * np.linalg.inv(matriz)).astype(int)
+    det = calcular_determinante(matriz)
+    matriz_adjunta = np.round(det * np.linalg.inv(matriz)).astype(int)
 
-    # Obtenemos la inversa modular con K^-1(mod 26) = det(K)^-1 * adj(K) mod 26
-    inversa = (determinante_inversa * adjunta) % 26
-    return inversa.astype(int)
+    # K^-1(mod 26) = det(K)^-1 * adj(K) mod 26
+    matriz_inversa_mod26 = (inverso_det_mod26 * matriz_adjunta) % 26
+    return matriz_inversa_mod26.astype(int)
 
 def texto_a_bloques(texto, n):
-    texto = texto.upper().replace(" ", "") # Eliminamos espacios y convertimos a mayúsculas
-    texto = "".join(i for i in texto if i.isalpha()) # Eliminamos caracteres no alfabéticos
+    texto = texto.upper().replace(" ", "")                      # Eliminamos espacios y convertimos a mayúsculas
+    texto = "".join(i for i in texto if i.isalpha())            # Eliminamos caracteres no alfabéticos
 
-    while len(texto) % n != 0: # Rellenamos con 'X' hasta que el texto sea múltiplo de n
+    while len(texto) % n != 0:                                  # Rellenamos con 'X' hasta que el texto sea múltiplo de n
         texto += 'X'
 
-    return [texto[i:i + n] for i in range(0, len(texto), n)] # Dividimos el texto en bloques de tamaño n
+    return [texto[i:i + n] for i in range(0, len(texto), n)]    # Dividimos el texto en bloques de tamaño n
 
 def cifrar_hill(texto, clave_matriz):
     # Verifica que la clave sea válida antes de cifrar.
     if not validacion(clave_matriz):
         raise ValueError("La matriz clave no es válida --> determinante no invertible mod 26")
 
-    n = clave_matriz.shape[0]       # Obtiene el tamaño de la matriz clave n*n
+    n = clave_matriz.shape[0]                                   # Obtiene el tamaño de la matriz clave n*n
     bloques = texto_a_bloques(texto, n)
     resultado = ""
 
@@ -79,27 +84,28 @@ def cifrar_hill(texto, clave_matriz):
 
 def descifrar_hill(texto_cifrado, clave_matriz):
     # Para descifrar, se usa la matriz inversa mod 26 de la clave
-    inversa = matriz_inversa(clave_matriz)
-    n = clave_matriz.shape[0]       # Obtiene el tamaño de la matriz clave n*n
+    inversa = calcular_matriz_inversa_mod26(clave_matriz)
+    n = clave_matriz.shape[0]                                   # Obtiene el tamaño de la matriz clave n*n
     bloques = texto_a_bloques(texto_cifrado, n)
-    resultado = "" # Cadena para almacenar el resultado descifrado
+    resultado = ""                                              # Cadena para almacenar el resultado descifrado
 
     for bloque in bloques:
         # Convierte el bloque de letras en un vector de números A=0, B=1 ...
         vector = np.array([ord(c) - ord('A') for c in bloque])
         # Aplicamos la fórmula: P = K^-1 * C (mod 26)
-        vector_descifrado = inversa.dot(vector) % 26 # .dot() realiza la multiplicación de matriz por vector
+        vector_descifrado = inversa.dot(vector) % 26            # .dot() realiza la multiplicación de matriz por vector
         # Convierte el vector descifrado en letras.
         resultado += "".join(chr(int(x) + ord('A')) for x in vector_descifrado)
 
     return resultado
 
 # Prueba
-# Clave 2x2
-clave = np.array([[3,3],[2,5]])
+'''
+clave = np.array([[3,2,3],[2,5,1],[1,2,4]])
 
-cifrado = cifrar_hill("Hola Esto es un test 123 $%&/ .  .", clave)
+cifrado = cifrar_hill("Hola Me Han Cifrado", clave)
 print("Cifrado Hill:", cifrado)
 
 descifrado = descifrar_hill(cifrado, clave)
 print("Descifrado Hill:", descifrado)
+'''

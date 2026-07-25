@@ -79,8 +79,10 @@ def descifrar_afin(texto_cifrado, a, b):
     return resultado
 
 # Prueba
+'''
 cifrado = cifrar_afin("Hola Esto es un test 123 $%&/ .  .", a=5, b=8)
 print("Cifrado afín:", cifrado)
 # Se descifra
 descifrado = descifrar_afin(cifrado, a=5, b=8)
 print("Descifrado:", descifrado)
+'''
