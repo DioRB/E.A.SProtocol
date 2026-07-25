@@ -2,11 +2,11 @@ from app.modelos.arista import Arista
 from app.modelos.nodo import Nodo
 from app.modelos.grafo import Grafo
 
-class GrafoService:
+class Simulador:
     @staticmethod
 
     # Ejemplo de grafo para probar
-    def grafo_prueba():
+    def crear_grafo_prueba():
 
         grafo = Grafo()
 
