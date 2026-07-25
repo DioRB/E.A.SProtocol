@@ -1,6 +1,7 @@
 from app.modelos.arista import Arista
 from app.modelos.nodo import Nodo
 from app.modelos.grafo import Grafo
+from app.algoritmos.dijkstra import Dijkstra
 
 class Simulador:
     @staticmethod
@@ -24,3 +25,15 @@ class Simulador:
         grafo.agregar_arista(Arista("D", "E", 2))
 
         return grafo        
+
+#Recorrer el grafo utilizando el algoritmo Dijkstra (Primera prueba)
+grafo = Simulador.crear_grafo_prueba()
+
+ruta, costo = Dijkstra.calcular(
+    grafo,
+    "A",
+    "E"
+)
+
+print(ruta)
+print(costo)
