@@ -1,5 +1,5 @@
-from modelos.arista import Arista
-from modelos.nodo import Nodo
+from app.modelos.arista import Arista
+from app.modelos.nodo import Nodo
 
 class Grafo:
     def __init__(self):

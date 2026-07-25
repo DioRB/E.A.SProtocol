@@ -1,18 +1,8 @@
-from flask import Flask, render_template, jsonify
-from servicios.grafo_servicio import GrafoService
+from app import crear_app
 
-app = Flask(__name__)
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-# Ruta para probar el grafo
-@app.route("/grafo")
-def grafo():
-    grafo = GrafoService.grafo_prueba()
-
-    return jsonify(grafo.dictar())
+app = crear_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
