@@ -36,7 +36,9 @@ class Dijkstra:
         anteriores = {}
         visitados = set()
         orden_visita = []
+        pasos = []
         cola = []
+        eventos = []
 
         for nodo_id in grafo.nodos:
 
@@ -57,6 +59,13 @@ class Dijkstra:
 
             visitados.add(actual)
             orden_visita.append(actual)
+            pasos.append({
+                "nodo_actual": actual,
+                "distancia_actual": distancia_actual,
+                "cola": list(cola),
+                "distancias": distancias.copy(),
+                "visitados": list(visitados)
+            })
 
             if actual == destino:
                 break
@@ -65,17 +74,20 @@ class Dijkstra:
 
                 vecino = arista.fin
 
-                nuevo_costo = distancia_actual + arista.peso
+            nuevo_costo = distancia_actual + arista.peso
 
-                if nuevo_costo < distancias[vecino]:
+            costo_anterior = distancias[vecino]
 
-                    distancias[vecino] = nuevo_costo
-                    anteriores[vecino] = actual
-
-                    heapq.heappush(
-                        cola,
-                        (nuevo_costo, vecino)
-                    )
+            if nuevo_costo < costo_anterior:
+                distancias[vecino] = nuevo_costo
+                anteriores[vecino] = actual
+                heapq.heappush(
+                    cola,
+                    (nuevo_costo, vecino)
+                )
+                actualizado = True
+            else:
+                actualizado = False
 
         #4. SI NO HAY RUTA
         if distancias[destino] == float("inf"):
@@ -91,6 +103,16 @@ class Dijkstra:
 
             }
 
+        eventos.append({
+            "tipo": "relajacion",
+            "desde": actual,
+            "hasta": vecino,
+            "peso": arista.peso,
+            "costo_anterior": costo_anterior,
+            "nuevo_costo": nuevo_costo,
+            "actualizado": actualizado
+        })
+
         #5. RECONSTRUIR RUTA
         ruta = []
 
@@ -105,11 +127,13 @@ class Dijkstra:
 
         #6. RETORNAR RESULTADO
         return {
-
             "ruta": ruta,
             "costo": distancias[destino],
             "visitados": orden_visita,
             "distancias": distancias,
-            "anteriores": anteriores
-
+            "anteriores": anteriores,
+            "pasos": pasos,
+            "eventos": eventos
         }
+
+    
