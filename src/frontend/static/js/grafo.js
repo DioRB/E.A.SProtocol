@@ -47,42 +47,54 @@ export function dibujarGrafo(data){
 
         style:[
 
-            {
-                selector:"node",
-
-                style:{
-                    label:"data(label)",
-                    "background-color":"#2E86DE",
-                    color:"white",
+            { selector:"node", style:{
+                    "background-color":"#1F4E79",
+                    "border-width":1,
+                    "border-color":"#171A21",
+                    "shape":"round-rectangle",
+                label:"data(label)",
+                color:"white",
+                    "font-family":"IBM Plex Mono",
+                    "font-size":11,
                     "text-valign":"center",
                     "text-halign":"center"
                 }
-
             },
-
-            {
-
-                selector:"edge",
-
-                style:{
-                    label:"data(label)",
-                    width:3,
+            { selector:"edge", style:{
+                    "line-color":"#9BA5AF",
+                    "target-arrow-color":"#9BA5AF",
+                label:"data(label)",
+                    "font-family":"IBM Plex Mono",
+                    "font-size":10,
+                width:2,
                     "curve-style":"bezier",
                     "target-arrow-shape":"triangle"
                 }
-
             },
-
             {
-            selector: ".seleccionado",
-
-            style:{
-                "background-color":"orange",
-                "border-width":4,
-                "border-color":"red"
+                selector:".seleccionado",
+                style:{
+                    "background-color":"#B7791F",
+                    "border-width":3,
+                    "border-color":"#171A21"    
+                }
+            },
+            {
+                selector:"node.ruta",
+                style:{
+                    "background-color":"#2F6F4E",  
+                    "border-width":2,
+                    "border-color":"#173c5c"
+                }
+            },
+            {
+                selector:"edge.ruta",
+                style:{
+                    "line-color":"#2F6F4E",
+                    "target-arrow-color":"#2F6F4E",
+                    "width":4 
+                }
             }
-        }
-
         ],
 
         layout:{
@@ -126,6 +138,7 @@ export function dibujarGrafo(data){
         // Selecciona el nodo
         case "seleccionar":
             seleccionarNodo(nodo);
+            mostrarInformacionNodo(nodo);
             break;
 
         // Crea la arista del nodo inicial al final
@@ -355,7 +368,90 @@ export function actualizarGrafo(data){
     });
 
     editor.cy.add(elementos);
-    editor.cy.layout({
-        name:"preset"
-    }).run();
+}
+
+// Utiliza dijkstra para resaltar la ruta más optima
+export function resaltarRuta(ruta){
+
+    editor.cy.elements().removeClass("ruta");
+
+    for(let i=0;i<ruta.length-1;i++){
+
+        const origen = ruta[i];
+        const destino = ruta[i+1];
+
+        const arista = editor.cy.edges().filter(edge=>{
+            return (
+                edge.source().id()==origen &&
+                edge.target().id()==destino
+            );
+        });
+
+        arista.addClass("ruta");
+
+    }
+
+    ruta.forEach(id=>{
+
+        editor.cy.getElementById(id)
+            .addClass("ruta");
+    });
+}
+
+export function limpiarResaltado(){
+
+    editor.cy.elements()
+        .removeClass("ruta")
+        .removeClass("seleccionado");
+
+}
+
+function mostrarInformacionNodo(nodo){
+
+
+    document
+    .getElementById("sinSeleccion")
+    .style.display="none";
+
+
+    document
+    .getElementById("infoNodo")
+    .style.display="block";
+
+
+    document
+    .getElementById("nodoId")
+    .textContent=nodo.id();
+
+
+    document
+    .getElementById("nodoEtiqueta")
+    .textContent=nodo.data("label");
+
+
+    document
+    .getElementById("nodoEstado")
+    .textContent=nodo.data("estado");
+
+
+    document
+    .getElementById("nodoConfianza")
+    .textContent=nodo.data("confianza") ?? "N/A";
+
+
+    const vecinos = nodo.neighborhood("node");
+
+
+    document
+    .getElementById("nodoConexiones")
+    .textContent=vecinos.length;
+
+
+    document
+    .getElementById("nodoVecinos")
+    .textContent=
+        vecinos
+        .map(n=>n.id())
+        .join(", ");
+
 }
