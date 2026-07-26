@@ -283,27 +283,6 @@ class Dijkstra:
             "confianza_promedio": round(confianza_promedio, 3)
         }
 
-        #CALCULAR METRICAS DE LA RUTA
-
-        for i in range(len(ruta) - 1):
-
-            origen_actual = ruta[i]
-            destino_actual = ruta[i + 1]
-
-            arista = grafo.obtener_arista(
-                origen_actual,
-                destino_actual
-            )
-
-            nodo = grafo.obtener_nodo(destino_actual)
-            peso_total += arista.peso
-            riesgo_total += arista.riesgo
-            penalizacion_confianza_total += (
-                lambda_confianza *
-                (1 - nodo.nivel_confianza)
-            )
-
-
         #RESULTADO
         return {
             "ruta": ruta,

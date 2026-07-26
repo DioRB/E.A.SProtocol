@@ -138,6 +138,16 @@ def registrar_rutas(app):
         origen = datos["origen"]
         destino = datos["destino"]
 
+        lambda_confianza = datos.get(
+            "lambda_confianza",
+            2.0
+        )
+
+        lambda_riesgo = datos.get(
+            "lambda_riesgo",
+            1.0
+        )
+
 
         grafo = Simulador.obtener_grafo()
 
@@ -145,7 +155,9 @@ def registrar_rutas(app):
         resultado = Dijkstra.calcular(
             grafo,
             origen,
-            destino
+            destino,
+            lambda_confianza,
+            lambda_riesgo
         )
 
 

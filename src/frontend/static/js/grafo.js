@@ -11,11 +11,12 @@ export function dibujarGrafo(data){
 
         elementos.push({
 
-            data:{
-                id:nodo.id,
-                label:nodo.etiqueta,
-                estado:nodo.estado
-            },
+        data:{
+            id:nodo.id,
+            label:nodo.etiqueta,
+            estado:nodo.estado,
+            confianza:nodo.nivel_confianza
+        },
 
             position:{
                 x:nodo.x,
@@ -228,7 +229,8 @@ export function agregarNodoVisual(nodo){
         data:{
             id:nodo.id,
             label:nodo.etiqueta,
-            estado:nodo.estado
+            estado:nodo.estado,
+            confianza:nodo.nivel_confianza
         },
         position:{
             x:nodo.x,
@@ -350,7 +352,8 @@ export function actualizarGrafo(data){
             data:{
                 id:nodo.id,
                 label:nodo.etiqueta,
-                estado:nodo.estado
+                estado:nodo.estado,
+                confianza:nodo.nivel_confianza
             },
             position:{
                 x:nodo.x,

@@ -235,10 +235,26 @@ document
             "destinoDijkstra"
         ).value;
 
+        const lambdaConfianza =
+        Number(
+            document.getElementById(
+                "lambdaConfianza"
+            ).value
+        );
+
+        const lambdaRiesgo =
+        Number(
+            document.getElementById(
+                "lambdaRiesgo"
+            ).value
+        );
+
         const resultado =
         await ejecutarDijkstra(
             origen,
-            destino
+            destino,
+            lambdaConfianza,
+            lambdaRiesgo
         );
 
         console.log(resultado);
