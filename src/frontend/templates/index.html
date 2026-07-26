@@ -6,28 +6,63 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
 </head>
 <body>
+<header>
+
+    <h1>E.A.S Protocol</h1>
+
+</header>
+
+<nav class="toolbar">
+
+    <button id="modoSeleccionar">
+        Seleccionar
+    </button>
+
+    <button id="modoNodo">
+        Nodo
+    </button>
+
+    <button id="modoArista">
+        Arista
+    </button>
+
+    <button id="modoEliminar">
+        Eliminar
+    </button>
+
+    <button id="modoDijkstra">
+        Dijkstra
+    </button>
+
+    <button id="modoCifrado">
+        Cifrado
+    </button>
+
+    <button id="reiniciar">
+        Reiniciar
+    </button>
+
+</nav>
 
 <main>
-
-    <h1>Grafo</h1>
 
     <div class="contenedor">
 
         <div id="cy"></div>
+    
+    <section class="resultado">
 
-        <aside class="panel">
+    <h2>Resultado</h2>
 
-            <h2>Panel de control</h2>
+    <pre id="resultado"></pre>
 
-        </aside>
-
-    </div>
+</section>
 
 </main>
 
 <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 
-<script src="{{ url_for('static', filename='js/grafo.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 </body>
 </html>
