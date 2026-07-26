@@ -1,6 +1,6 @@
 // Interfaz que relaciona todos los elementos graficos de la página con las funciones adjudicadas
-import { reiniciarGrafo } from "./api.js";
-import { actualizarGrafo } from "./grafo.js";
+import { reiniciarGrafo, ejecutarDijkstra} from "./api.js";
+import { actualizarGrafo, resaltarRuta, limpiarResaltado } from "./grafo.js";
 import { editor } from "./editor.js";
 
 export function cambiarModo(nuevoModo){
@@ -47,6 +47,75 @@ function actualizarToolbar(){
 
 actualizarToolbar();
 
+export function cargarNodosDijkstra(data){
+
+    const origen =
+    document.getElementById(
+        "origenDijkstra"
+    );
+
+    const destino =
+    document.getElementById(
+        "destinoDijkstra"
+    );
+
+    origen.innerHTML="";
+    destino.innerHTML="";
+
+    data.nodos.forEach(nodo=>{
+
+        let opcion1 =
+        document.createElement("option");
+
+        opcion1.value=nodo.id;
+        opcion1.text=nodo.id;
+
+        let opcion2 =
+        document.createElement("option");
+
+        opcion2.value=nodo.id;
+        opcion2.text=nodo.id;
+
+        origen.appendChild(opcion1);
+
+        destino.appendChild(opcion2);
+
+    });
+}
+
+function mostrarResultado(resultado){
+
+    const panel = document.getElementById("resultadoDijkstra");
+
+    panel.innerHTML = `
+
+        <h3>Resultado Dijkstra</h3>
+
+        <p>
+            Ruta:
+            ${resultado.ruta.join(" → ")}
+        </p>
+
+        <p>
+            Costo total:
+            ${resultado.costo}
+        </p>
+
+        <p>
+            Riesgo:
+            ${resultado.metricas.riesgo_total}
+        </p>
+
+        <p>
+            Confianza promedio:
+            ${resultado.analisis.confianza_promedio}
+        </p>
+
+    `;
+
+}
+
+
 // los eventos para cada botón
 document
     .getElementById("modoSeleccionar")
@@ -81,14 +150,6 @@ document
     });
 
 document
-    .getElementById("modoDijkstra")
-    .addEventListener("click", () => {
-
-        cambiarModo("dijkstra");
-
-    });
-
-document
     .getElementById("modoCifrado")
     .addEventListener("click", () => {
 
@@ -116,3 +177,57 @@ document
         cambiarModo("seleccionar");
 
     });
+
+document
+    .getElementById("ejecutarDijkstra")
+    .addEventListener(
+    "click",
+
+    async()=>{
+
+        const origen =
+        document.getElementById(
+            "origenDijkstra"
+        ).value;
+
+        const destino =
+        document.getElementById(
+            "destinoDijkstra"
+        ).value;
+
+        const resultado =
+        await ejecutarDijkstra(
+            origen,
+            destino
+        );
+
+        console.log(resultado);
+
+        resaltarRuta(
+            resultado.ruta
+        );
+
+        mostrarResultado(
+            resultado
+        );
+    });
+
+document
+    .getElementById("limpiarRuta")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            limpiarResaltado();
+        }
+    );
+
+document
+    .getElementById("limpiarRuta")
+    .addEventListener(
+        "click",
+        ()=>{
+            limpiarResaltado();
+            document.getElementById("resultadoDijkstra").innerHTML = "";
+        }
+    );
