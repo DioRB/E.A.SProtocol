@@ -26,13 +26,27 @@ class Simulador:
 
         return grafo        
 
-#Recorrer el grafo utilizando el algoritmo Dijkstra (Primera prueba)
-grafo = Simulador.crear_grafo_prueba()
+    
+    grafo = None
 
-resultado = Dijkstra.calcular(
-    grafo,
-    "A",
-    "E"
-)
+    @classmethod
+    def inicializar(cls):
 
-print(resultado)
+        if cls.grafo is None:
+
+            cls.grafo = cls.crear_grafo_prueba()
+
+    @classmethod
+    def obtener_grafo(cls):
+
+        cls.inicializar()
+
+        return cls.grafo
+
+    @classmethod
+    def reiniciar_grafo(cls):
+
+        cls.grafo = cls.crear_grafo_prueba()
+
+        return cls.grafo
+
