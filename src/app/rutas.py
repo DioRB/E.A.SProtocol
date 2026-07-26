@@ -119,3 +119,24 @@ def registrar_rutas(app):
         grafo = Simulador.reiniciar_grafo()
 
         return jsonify(grafo.dictar())
+
+    @app.route("/api/dijkstra", methods=["POST"])
+    def ejecutar_dijkstra():
+
+        datos = request.get_json()
+
+        origen = datos["origen"]
+        destino = datos["destino"]
+
+
+        grafo = Simulador.obtener_grafo()
+
+
+        resultado = Dijkstra.calcular(
+            grafo,
+            origen,
+            destino
+        )
+
+
+        return jsonify(resultado)

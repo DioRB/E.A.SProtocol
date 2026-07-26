@@ -1,6 +1,16 @@
 import heapq
 from app.modelos.grafo import Grafo
 
+def limpiar_distancias(distancias):
+
+    return {
+        nodo: (
+            round(valor,3)
+            if valor != float("inf")
+            else None
+        )
+        for nodo, valor in distancias.items()
+    }
 
 class Dijkstra:
     """
@@ -76,8 +86,12 @@ class Dijkstra:
             timeline.append({
                 "tipo": "visita",
                 "nodo": actual,
-                "distancia": distancia_actual,
-                "distancias": distancias.copy(),
+                "distancia": (
+                    round(distancia_actual,3)
+                    if distancia_actual != float("inf")
+                    else None
+                ),
+                "distancias": limpiar_distancias(distancias),
                 "visitados": list(visitados)
             })
 
@@ -319,17 +333,7 @@ class Dijkstra:
             },
             "analisis": analisis,
             "visitados": orden_visita,
-            "distancias": {
-
-                nodo: (
-                    round(valor, 3)
-                    if valor != float("inf")
-                    else "∞"
-                )
-
-                for nodo, valor in distancias.items()
-
-            },
+            "distancias": limpiar_distancias(distancias),
             "anteriores": anteriores,
             "timeline": timeline,
             "parametros": {

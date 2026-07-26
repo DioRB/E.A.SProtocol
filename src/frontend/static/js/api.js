@@ -161,3 +161,43 @@ export async function reiniciarGrafo(){
     return await response.json();
 
 }
+
+
+// IMPLEMENTACIÓN DEL ALGORITMO DE DIJKSTRA
+
+export async function ejecutarDijkstra(origen,destino){
+
+
+    const response = await fetch(
+        "/api/dijkstra",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                origen:origen,
+                destino:destino
+
+            })
+
+        }
+    );
+
+
+    if(!response.ok){
+
+        throw new Error(
+            "Error ejecutando Dijkstra"
+        );
+
+    }
+
+
+    return await response.json();
+
+}
