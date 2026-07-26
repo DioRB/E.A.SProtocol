@@ -1,5 +1,6 @@
 import { crearNodo, eliminarNodo, crearArista, eliminarArista} from "./api.js";
 import { editor } from "./editor.js";
+import { actualizarListaNodos } from "./interfaz.js";
 
 //Función que dibuja el grafo base
 export function dibujarGrafo(data){
@@ -212,6 +213,7 @@ async function crearNodoEnPosicion(posicion){
     try{
         const creado = await crearNodo(nodo);
         agregarNodoVisual(creado);
+        actualizarListaNodos();
     }
     catch(error){
         alert(error);
@@ -264,6 +266,7 @@ async function eliminarNodoSeleccionado(){
     );
 
     editor.nodoSeleccionado.remove();
+    actualizarListaNodos();
     editor.nodoSeleccionado = null;
 
 }

@@ -1,5 +1,5 @@
 // Interfaz que relaciona todos los elementos graficos de la página con las funciones adjudicadas
-import { reiniciarGrafo, ejecutarDijkstra} from "./api.js";
+import { reiniciarGrafo, ejecutarDijkstra, obtenerNodos} from "./api.js";
 import { actualizarGrafo, resaltarRuta, limpiarResaltado } from "./grafo.js";
 import { editor } from "./editor.js";
 
@@ -46,6 +46,46 @@ function actualizarToolbar(){
 }
 
 actualizarToolbar();
+
+export async function actualizarListaNodos(){
+
+    const nodos = await obtenerNodos();
+
+
+    const origen =
+        document.getElementById("origenDijkstra");
+
+    const destino =
+        document.getElementById("destinoDijkstra");
+
+
+    origen.innerHTML="";
+    destino.innerHTML="";
+
+
+    nodos.forEach(nodo=>{
+
+
+        const opcion1 =
+        document.createElement("option");
+
+        opcion1.value=nodo.id;
+        opcion1.textContent=nodo.etiqueta;
+
+
+        const opcion2 =
+        document.createElement("option");
+
+        opcion2.value=nodo.id;
+        opcion2.textContent=nodo.etiqueta;
+
+
+        origen.appendChild(opcion1);
+        destino.appendChild(opcion2);
+
+    });
+
+}
 
 export function cargarNodosDijkstra(data){
 

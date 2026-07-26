@@ -23,6 +23,16 @@ def registrar_rutas(app):
 
         return jsonify(grafo.dictar())
 
+    @app.route("/api/nodos", methods=["GET"])
+    def obtener_nodos():
+
+        grafo = Simulador.obtener_grafo()
+
+        return jsonify([
+            nodo.dictar()
+            for nodo in grafo.nodos.values()
+        ])
+
     ## Ruta para la creación de los nodos
     @app.route("/api/nodos", methods=["POST"])
     def crear_nodo():
