@@ -10,6 +10,20 @@ export async function obtenerGrafo() {
     return await response.json();
 }
 
+export async function obtenerNodos(){
+
+    const response = await fetch("/api/nodos");
+
+    if(!response.ok){
+        throw new Error(
+            "No se pudieron obtener los nodos"
+        );
+    }
+
+    return await response.json();
+
+}
+
 export async function crearNodo(nodo){
 
     const response = await fetch(

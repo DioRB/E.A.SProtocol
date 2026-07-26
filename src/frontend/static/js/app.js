@@ -12,6 +12,8 @@ async function iniciar(){
     dibujarGrafo(grafo);
 
     cargarNodosDijkstra(grafo);
+
+    actualizarListaNodos();
 }
 
 iniciar();
