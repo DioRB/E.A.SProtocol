@@ -1,6 +1,6 @@
 // Interfaz que relaciona todos los elementos graficos de la página con las funciones adjudicadas
 import { reiniciarGrafo, ejecutarDijkstra, obtenerNodos} from "./api.js";
-import { actualizarGrafo, resaltarRuta, limpiarResaltado } from "./grafo.js";
+import {actualizarGrafo,resaltarRuta,limpiarResaltado,animarTimeline} from "./grafo.js";
 import { editor } from "./editor.js";
 
 export function cambiarModo(nuevoModo){
@@ -125,34 +125,77 @@ export function cargarNodosDijkstra(data){
 
 function mostrarResultado(resultado){
 
-    const panel = document.getElementById("resultadoDijkstra");
+    const panel = document.getElementById(
+        "resultadoDijkstra"
+    );
 
-    panel.innerHTML = `
+    if(resultado.ruta.length===0){
 
+        panel.innerHTML=`
+
+            <h3>Resultado</h3>
+
+            <p>${resultado.mensaje}</p>
+
+        `;
+
+        return;
+
+    }
+
+    panel.innerHTML=`
         <h3>Resultado Dijkstra</h3>
-
         <p>
-            Ruta:
+            <strong>Ruta:</strong><br>
             ${resultado.ruta.join(" → ")}
         </p>
-
+        <hr>
         <p>
-            Costo total:
+            <strong>Costo total:</strong>
             ${resultado.costo}
         </p>
-
+        <h4>Métricas</h4>
         <p>
-            Riesgo:
+            Peso total:
+            ${resultado.metricas.peso_total}
+        </p>
+        <p>
+            Riesgo total:
             ${resultado.metricas.riesgo_total}
         </p>
-
+        <p>
+            Penalización confianza:
+            ${resultado.metricas.penalizacion_confianza_total}
+        </p>
+        <hr>
+        <h4>Análisis</h4>
+        <p>
+            ${resultado.analisis.criterio}
+        </p>
+        <p>
+            Nodos recorridos:
+            ${resultado.analisis.nodos_recorridos}
+        </p>
+        <p>
+            Riesgo promedio:
+            ${resultado.analisis.riesgo_promedio}
+        </p>
         <p>
             Confianza promedio:
             ${resultado.analisis.confianza_promedio}
         </p>
+        <hr>
+        <h4>Parámetros</h4>
+        <p>
+            λ confianza:
+            ${resultado.parametros.lambda_confianza}
+        </p>
+        <p>
+            λ riesgo:
+            ${resultado.parametros.lambda_riesgo}
+        </p>
 
     `;
-
 }
 
 
@@ -259,6 +302,10 @@ document
 
         console.log(resultado);
 
+        await animarTimeline(
+            resultado.timeline
+        );
+
         resaltarRuta(
             resultado.ruta
         );
@@ -287,3 +334,43 @@ document
             document.getElementById("resultadoDijkstra").innerHTML = "";
         }
     );
+
+const sliderConfianza =
+document.getElementById(
+    "lambdaConfianza"
+);
+
+const textoConfianza =
+document.getElementById(
+    "valorLambdaConfianza"
+);
+
+sliderConfianza.addEventListener(
+    "input",
+    ()=>{
+
+        textoConfianza.textContent =
+            sliderConfianza.value;
+
+    }
+);
+
+const sliderRiesgo =
+document.getElementById(
+    "lambdaRiesgo"
+);
+
+const textoRiesgo =
+document.getElementById(
+    "valorLambdaRiesgo"
+);
+
+sliderRiesgo.addEventListener(
+    "input",
+    ()=>{
+
+        textoRiesgo.textContent =
+            sliderRiesgo.value;
+
+    }
+);

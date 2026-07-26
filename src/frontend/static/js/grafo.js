@@ -62,6 +62,24 @@ export function dibujarGrafo(data){
                     "text-halign":"center"
                 }
             },
+            {
+                selector:'node[estado="Seguro"]',
+                style:{
+                    "background-color":"#2F6F4E"
+                }
+            },
+            {
+                selector:'node[estado="En monitoreo"]',
+                style:{
+                    "background-color":"#B7791F"
+                }
+            },
+            {
+                selector:'node[estado="Comprometido"]',
+                style:{
+                    "background-color":"#A13D2E"
+                }
+            },
             { selector:"edge", style:{
                     "line-color":"#9BA5AF",
                     "target-arrow-color":"#9BA5AF",
@@ -95,6 +113,39 @@ export function dibujarGrafo(data){
                     "line-color":"#2F6F4E",
                     "target-arrow-color":"#2F6F4E",
                     "width":4 
+                }
+            },
+            {
+                selector:"edge.explorando",
+                style:{
+                    "line-color":"#2F80ED",
+                    "target-arrow-color":"#2F80ED",
+                    "width":4
+                }
+            },
+            {
+                selector:"edge.correcta",
+                style:{
+                    "line-color":"#27AE60",
+                    "target-arrow-color":"#27AE60",
+                    "width":5
+                }
+            },
+            {
+                selector:"edge.descartada",
+                style:{
+                    "line-color":"#EB5757",
+                    "target-arrow-color":"#EB5757",
+                    "line-style":"dashed",
+                    "width":4
+                }
+            },
+            {
+                selector:"node.visitando",
+                style:{
+                    "background-color":"#F2C94C",
+                    "border-width":3,
+                    "border-color":"#171A21"
                 }
             }
         ],
@@ -405,10 +456,62 @@ export function resaltarRuta(ruta){
 }
 
 export function limpiarResaltado(){
-
     editor.cy.elements()
-        .removeClass("ruta")
-        .removeClass("seleccionado");
+    .removeClass("ruta")
+    .removeClass("seleccionado")
+    .removeClass("visitando")
+    .removeClass("explorando")
+    .removeClass("correcta")
+    .removeClass("descartada")
+
+}
+
+
+export async function animarTimeline(timeline){
+
+    limpiarResaltado();
+
+    for(const evento of timeline){
+
+        editor.cy.elements().removeClass(
+            "visitando explorando"
+        );
+
+        if(evento.tipo==="visita"){
+
+            editor.cy
+                .getElementById(evento.nodo)
+                .addClass("visitando");
+
+        }
+
+        if(evento.tipo==="relajacion"){
+
+            const arista = editor.cy
+                .edges()
+                .filter(edge=>
+
+                    edge.source().id()===evento.desde &&
+                    edge.target().id()===evento.hasta
+
+                );
+
+            if(evento.actualizado){
+            arista.addClass("correcta");
+            }
+            else{
+                arista.addClass("descartada");
+            }       
+
+        }
+
+        await new Promise(resolve=>
+
+            setTimeout(resolve,450)
+
+        );
+
+    }
 
 }
 

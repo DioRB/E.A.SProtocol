@@ -121,29 +121,37 @@
                 <label for="origenDijkstra">Origen</label>
                 <select id="origenDijkstra"></select>
 
-                <label for="destinoDijkstra">Destino</label>
-                <select id="destinoDijkstra"></select>
+                <label for="destinoDijkstra">
+                    Destino
                 </label>
 
-            <input
-                type="range"
-                id="lambdaConfianza"
-                min="0"
-                max="5"
-                step="0.1"
-                value="2">
+                <select id="destinoDijkstra"></select>
 
-            <label for="lambdaRiesgo">
-                λ Riesgo
-            </label>
+                <label for="lambdaConfianza">
+                    &lambda; Confianza:
+                    <span id="valorLambdaConfianza">2.0</span>
+                </label>
 
-            <input
-                type="range"
-                id="lambdaRiesgo"
-                min="0"
-                max="5"
-                step="0.1"
-                value="1">
+                <input
+                    type="range"
+                    id="lambdaConfianza"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="2">
+
+                <label for="lambdaRiesgo">
+                    &lambda; Riesgo:
+                    <span id="valorLambdaRiesgo">1.0</span>
+                </label>
+
+                <input
+                    type="range"
+                    id="lambdaRiesgo"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="1">
 
                 <button id="ejecutarDijkstra" class="btn-primary">
                     Buscar ruta
