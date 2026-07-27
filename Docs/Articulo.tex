@@ -340,10 +340,37 @@ Los principales componentes del cliente son:
 \end{itemize}
 
 
+\section{Conclusiones}
+El desarrollo de este proyecto permitió integrar un par de todos los conceptos fundamentales de las matemáticas discretas denro de una aplicación interactiva orientada al aprendizaje, usando como contexto y simulación, el modelamiento de redes de comunicación. A partir de de la teoría de grafos fue posible representar una red mediante vértices y aristas ponderadas, donde cada dispositivo y canal de comunicación poseen características propias que influyen en la selección de rutas al aplicarse el algoritmo Dijkstra.
 
+La modificación e implementación de este algoritmo de busqueda permitió extender un concepto tradicional de busqueda de camino mínimo, incorporando factores adicionales que pretenden relacionarse con la seguridad en la red. Mediante la adición de parámetros como el riesgo de los enlaces y el nivel de confianza de los dispositivos, fue posible obtener rutas que no solamente consideran el costo asociado a la distancia o peso del enlace, sino también condiciones relacionadas con la confiabilidad de la comunicación.
 
+Además, la integración de algoritmos de criptografía clásica permitió complementar el modelo de comunicación segura, demostrando la relación existente entre estructuras discretas, teoría de números y mecanismos básicos de protección de información. La implementación de los cifrados Afín y Hill permitió observar cómo conceptos como el máximo común divisor, inversos modulares y operaciones matriciales en aritmética modular tienen aplicaciones directas en sistemas de seguridad.
 
+Desde el punto de vista del desarrollo de software, la separación entre backend y frontend permitió construir una arquitectura modular, donde los algoritmos, la gestión de datos y la representación visual poseen responsabilidades independientes, buscando una buena organización, arquitectura y una mayor facilidad a la hora de integrar partes separadas que se construian en el equipo de trabajo a lo largo del tiempo de desarrollo. Esto facilitó la interacción del usuario con el sistema y permitió visualizar de manera dinámica los procesos internos, especialmente durante la ejecución del algoritmo de búsqueda de rutas.
 
+En general, el proyecto cumplió con el objetivo planteado de crear una herramienta educativa que relaciona conceptos de matemáticas discretas con una aplicación práctica en redes y seguridad informática. La plataforma desarrollada permite experimentar con diferentes configuraciones de red y observar cómo las modificaciones realizadas afectan los resultados obtenidos.
+
+\section{Trabajo futuro}
+Aunque la versión desarrollada cumple con la representación y simulación de una red pequeña, existen diferentes oportunidades de mejora para ampliar sus capacidades y acercarla a escenarios más reales.
+
+Una primera mejora consiste en implementar algoritmos adicionales de análisis de grafos, como búsqueda en anchura, búsqueda en profundidad, características adicionales que se tenían contempladas, pero a causa del tiempo y fluidez fueron descartadas. La idea es poder incluir diferentes tipos algoritmos que permitan comparar diferentes estrategias de exploración y de optimización en una misma red.
+
+Respecto al algoritmo de búsqueda de rutas, una extensión posible sería incorporar modelos de costo más avanzados, donde factores como congestión de red, latencia, ancho de banda o disponibilidad temporal e incluso condiciones físicas puedan influir en la selección del camino óptimo. También sería posible comparar el comportamiento del algoritmo modificado frente a la versión tradicional de Dijkstra mediante diferentes escenarios de prueba.
+
+En el componente de seguridad, una mejora importante sería incluir algoritmos criptográficos modernos y protocolos utilizados actualmente en redes de comunicación. Los métodos implementados en esta versión corresponden a técnicas históricas de criptografía clásica, útiles para comprender los fundamentos matemáticos y poder formar una idea de comprensión, pero limitadas frente a los requerimientos actuales de seguridad.
+
+Otra línea de trabajo consiste en ampliar la persistencia de información mediante una base de datos que permita almacenar diferentes configuraciones de red, usuarios, simulaciones realizadas y resultados obtenidos. Esto permitiría convertir la aplicación en una herramienta de experimentación más completa.
+
+\section{Contribuciones de los integrantes.}
+
+A pesar de que cada uno tuvo un rol y un trabajo parcialmente definido en un principio, todos los integrantes tuvieron interactuaron casi con todas las partes del código para ir adaptandolo a cada una de las nuevas funcionalidades y caracteristicas que se iban implementado, así como revisiones de pull request. De igual manera, se puede generalizar las aportaciones de cada uno al desarrollo del proyecto.
+
+Aimer Garcia: Creación de los algoritmos de criptografía Afín y Hill adaptados según las necesidades, al igual que su respectiva implementación en el frontend para su correcto funcionamiento con las intervenciones del usuario, validaciones de entradas y mensajes de error.
+
+Jair Gomez: Creación del algoritmo de Dijkstra modificado y las modificaciones necesarias para su correcta adaptación. De igual manera, la organización del backend con las rutas necesarias y actualizaciones de frontend para un apartado visual más interactivo y atractivo.
+
+Diego Robayo: Creación de los modelos del grafo. Creación de las rutas principales para hacer uso de los metodos http. Estructuración principal de los modelos JavaScript para la comunicación entre frontend y backend. Herramientas de control y modificación del grafo visual. Desarrollo del artículo.
 
 
 \bibliographystyle{IEEEtran}
