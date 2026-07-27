@@ -60,36 +60,60 @@
 
         <section class="panel panel-cif-ruta">
 
-            <h3>Cifrar mensaje en la ruta</h3>
-
-            <label class="LineaChk">
-                <input
-                    type="checkbox"
-                    id="activarCifrado">
-                Activar cifrado del mensaje
-            </label>
+            <div class="panel-cif-ruta-encabezado">
+                <h3>Cifrar mensaje en la ruta</h3>
+                <label class="LineaChk">
+                    <input
+                        type="checkbox"
+                        id="activarCifrado">
+                    Activar cifrado del mensaje
+                </label>
+            </div>
 
             <div
                 id="bloqueCifradoRuta"
                 style="display:none">
 
-                <label for="algoritmoCifradoRuta">
-                    Algoritmo
-                </label>
-                <select id="algoritmoCifradoRuta">
-                    <option value="afin">Cifrado Afín</option>
-                    <option value="hill">Cifrado Hill</option>
-                </select>
+                <div class="panel-cif-ruta-cuerpo">
 
-                <div id="inputsClaveRuta"></div>
+                    <div class="panel-cif-ruta-col-izq">
 
-                <label for="mensajeDijkstra">
-                    Mensaje
-                </label>
-                <textarea
-                    id="mensajeDijkstra"
-                    rows="3"
-                    placeholder="Texto a cifrar antes de enviar"></textarea>
+                        <label for="algoritmoCifradoRuta">
+                            Algoritmo
+                        </label>
+                        <select id="algoritmoCifradoRuta">
+                            <option value="afin">Cifrado Afín</option>
+                            <option value="hill">Cifrado Hill</option>
+                        </select>
+
+                        <div id="inputsClaveRuta"></div>
+
+                    </div>
+
+                    <div class="panel-cif-ruta-mensaje">
+
+                        <label for="mensajeDijkstra">
+                            Mensaje
+                        </label>
+                        <textarea
+                            id="mensajeDijkstra"
+                            rows="3"
+                            placeholder="Texto a cifrar..."></textarea>
+
+                    </div>
+
+                    <span class="flecha-cif">→</span>
+
+                    <div class="panel-cif-ruta-col-der">
+
+                        <label>Vista previa del cifrado</label>
+                        <div id="cifradoVista" class="caja-cifrado">
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 

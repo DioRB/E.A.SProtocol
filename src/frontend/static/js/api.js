@@ -253,3 +253,39 @@ export async function descifrarTexto(algoritmo, texto, clave){
     return await response.json();
 
 }
+
+
+// Llama al endpoint para cifrar texto con una clave.
+export async function cifrarTexto(algoritmo, texto, clave){
+
+    const response = await fetch(
+        "/api/cifrado/cifrar",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                algoritmo,
+                texto,
+                clave
+            })
+
+        }
+    );
+
+
+    if(!response.ok){
+
+        const data = await response.json();
+        throw new Error(data.error || "Error cifrando");
+
+    }
+
+
+    return await response.json();
+
+}

@@ -15,6 +15,8 @@
     --estado-alerta: #22C55E;      /* Verde */
     --estado-riesgo: #6B7280;      /* Gris oscuro */
 
+    --error: #A13D2E;              /* Rojo */
+
     /* tipografia */
     --font-display:"Space Grotesk", "IBM Plex Sans", Arial, sans-serif;
     --font-body:"IBM Plex Sans", Arial, sans-serif;
@@ -258,6 +260,11 @@ button:focus-visible{
     outline:2px solid var(--accent);
     outline-offset:1px;
 }
+/* Slider de rango */
+.panel input[type="range"]{
+    width:100%;
+    accent-color:var(--accent);
+}
 
 .btn-primary,
 .btn-secondary{
@@ -321,22 +328,74 @@ button:focus-visible{
 .panel-cif-ruta{
     margin-top:0;
     display:flex;
-    flex-wrap:wrap;
-    gap:18px 24px;
-    align-items:flex-start;
+    flex-direction:column;
+    gap:18px;
 }
 
 .panel-cif-ruta h3{
-    width:100%;
     margin-bottom:0;
 }
 
-.panel-cif-ruta > label,
-.panel-cif-ruta select,
-.panel-cif-ruta textarea,
-.panel-cif-ruta #inputsClaveRuta{
-    flex:1 1 240px;
-    min-width:220px;
+.panel-cif-ruta-encabezado{
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+.panel-cif-ruta-encabezado .LineaChk{
+    margin-left:auto;
+}
+
+.panel-cif-ruta-cuerpo{
+    display:grid;
+    grid-template-columns:1fr auto auto 1fr;
+    gap:24px;
+    align-items:center;
+}
+
+.panel-cif-ruta-col-izq,
+.panel-cif-ruta-col-der,
+.panel-cif-ruta-mensaje{
+    align-self:center;
+}
+
+.panel-cif-ruta-col-izq{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.panel-cif-ruta-col-izq label,
+.panel-cif-ruta-col-izq select,
+.panel-cif-ruta-col-izq textarea,
+.panel-cif-ruta-col-izq #inputsClaveRuta{
+    width:100%;
+}
+
+.panel-cif-ruta-col-der{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.panel-cif-ruta-col-der label{
+    margin-top:0;
+}
+
+.panel-cif-ruta-mensaje{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:8px;
+}
+
+.flecha-cif{
+    font-family:var(--font-mono);
+    font-size:36px;
+    color:var(--ink-muted);
+    align-self:center;
+    line-height:1;
 }
 
 .panel-cif-ruta input[type="number"],
@@ -350,10 +409,27 @@ button:focus-visible{
     font-size:13px;
 }
 
-.panel-cif-ruta textarea{
+.panel-cif-ruta textarea#mensajeDijkstra{
     resize:vertical;
-    min-height:60px;
+    min-height:90px;
     font-family:var(--font-body);
+}
+
+.caja-cifrado{
+    width:100%;
+    min-height:90px;
+    padding:10px 14px;
+    background:var(--bg);
+    border-left:3px solid var(--accent);
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--ink);
+    letter-spacing:.04em;
+}
+
+.caja-cifrado.error{
+    border-left-color:var(--error);
+    color:var(--error);
 }
 
 .LineaChk{

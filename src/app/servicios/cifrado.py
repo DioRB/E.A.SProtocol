@@ -18,7 +18,7 @@ ALGORITMOS = [
         "nombre": "hill",
         "etiqueta": "Cifrado Hill",
         "parametros": [
-            {"nombre": "n", "etiqueta": "Tamaño de la matriz n x n", "tipo": "numero", "min": 2, "max": 5}
+            {"nombre": "n", "etiqueta": "Tamaño de la matriz n x n", "tipo": "numero", "min": 2, "max": 7}
         ],
         "matriz": True
     }
@@ -41,6 +41,10 @@ def descifrar_afin(texto, clave):
 def _armar_matriz(clave):
     # La clave de Hill, es un diccionario con n y una matriz
     n = int(clave["n"])
+
+    if n < 2 or n > 7:
+        raise ValueError(f"El tamaño n debe estar entre 2 y 7")
+
     celdas = clave["matriz"]
 
     # Validamos coincida con n

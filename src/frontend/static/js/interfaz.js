@@ -1,5 +1,5 @@
 // Interfaz que relaciona todos los elementos graficos de la página con las funciones adjudicadas
-import { reiniciarGrafo, ejecutarDijkstra, obtenerNodos, descifrarTexto} from "./api.js";
+import { reiniciarGrafo, ejecutarDijkstra, obtenerNodos, descifrarTexto, cifrarTexto} from "./api.js";
 import {actualizarGrafo,resaltarRuta,limpiarResaltado,animarTimeline} from "./grafo.js";
 import { editor } from "./editor.js";
 
@@ -411,6 +411,24 @@ document
     );
 
 
+// Reflejamos el valor de los sliders cada vez que el usuario los mueve
+document
+    .getElementById("lambdaConfianza")
+    .addEventListener("input", (e) => {
+
+        document.getElementById("valorLambdaConfianza").textContent = e.target.value;
+
+    });
+
+document
+    .getElementById("lambdaRiesgo")
+    .addEventListener("input", (e) => {
+
+        document.getElementById("valorLambdaRiesgo").textContent = e.target.value;
+
+    });
+
+
 // ===== CIFRADO EN LA RUTA DIJKSTRA =====
 
 // Dibuja los inputs de la clave dependiendo del algoritmo
@@ -436,7 +454,7 @@ function dibujarInputsClave(contenedor, algoritmo){
 
         contenedor.innerHTML = `
             <label for="nRuta">Tamaño n</label>
-            <input type="number" id="nRuta" min="2" max="5" value="2">
+            <input type="number" id="nRuta" min="2" max="7" value="2">
             <div id="grillaMatrizRuta"></div>
         `;
 
@@ -451,7 +469,7 @@ function dibujarInputsClave(contenedor, algoritmo){
 
             grilla.innerHTML = "";
 
-            if(n < 2 || n > 5){
+            if(n < 2 || n > 7){
                 return;
             }
 
@@ -486,6 +504,19 @@ function dibujarInputsClave(contenedor, algoritmo){
         };
 
         inputN.addEventListener("change", pintarGrilla);
+
+        // Error si el usuario pone un n inválido
+        inputN.addEventListener("input", () => {
+
+            const caja = document.getElementById("cifradoVista");
+            const n = Number(inputN.value);
+
+            if(n < 2 || n > 7){
+                caja.classList.add("error");
+                caja.textContent = "Inválido, No puede ser un número menor a 2 o mayor a 7";
+            }
+
+        });
         pintarGrilla();
 
     }
@@ -542,6 +573,67 @@ function leerClaveCifradoRuta(){
 
 }
 
+// Escribe el cifrado letra por letra
+async function actualizarVistaCifrado(){
+
+    const caja =
+        document.getElementById("cifradoVista");
+
+    const mensaje =
+        document.getElementById("mensajeDijkstra").value;
+
+    if(mensaje.trim() === ""){
+        caja.textContent = "—";
+        caja.classList.remove("error");
+        return;
+    }
+
+    const clave = leerClaveCifradoRuta();
+
+    try{
+
+        const r = await cifrarTexto(
+            clave.algoritmo,
+            mensaje,
+            clave
+        );
+
+        caja.classList.remove("error");
+
+        // Cancela la animación previa si hay otra en curso
+        if(timerPintar !== null){
+            clearTimeout(timerPintar);
+        }
+
+        // Escribe letra a letra con delay de 35 ms
+        caja.textContent = "";
+        let i = 0;
+
+        const pintar = () => {
+
+            if(i >= r.cifrado.length){
+                timerPintar = null;
+                return;
+            }
+
+            caja.textContent += r.cifrado[i];
+            i = i + 1;
+
+            timerPintar = setTimeout(pintar, 35);
+
+        };
+
+        pintar();
+
+    } catch(error){
+
+        caja.classList.add("error");
+        caja.textContent = error.message;
+
+    }
+
+}
+
 // Mostrar o no el bloque cuando se marca el checkbox del cifrado
 document
     .getElementById("activarCifrado")
@@ -571,6 +663,8 @@ document
 
         dibujarInputsClave(contenedor, algoritmo);
 
+        actualizarVistaCifrado();
+
     });
 
 // Inputs por defecto al cargar la página
@@ -578,4 +672,27 @@ dibujarInputsClave(
     document.getElementById("inputsClaveRuta"),
     document.getElementById("algoritmoCifradoRuta").value
 );
+
+// Cuando el usuario hace cambios en la clave, se refresca la vista previa
+let timerPreview = null;
+let timerPintar = null;
+
+document
+    .getElementById("inputsClaveRuta")
+    .addEventListener("input", () => {
+
+        clearTimeout(timerPreview);
+        timerPreview = setTimeout(actualizarVistaCifrado, 200);
+
+    });
+
+// Cambios en el mensaje refrescan la vista previa
+document
+    .getElementById("mensajeDijkstra")
+    .addEventListener("input", () => {
+
+        clearTimeout(timerPreview);
+        actualizarVistaCifrado();
+
+    });
 

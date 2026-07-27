@@ -28,7 +28,7 @@ def inverso_modular(a, m=26):
 def cifrar_afin(texto, a, b):
     # Verifica que la clave sea válida.
     if not validacion_clave(a):
-        raise ValueError(f"a={a} no es válido, gcd(a,26) debe ser 1")
+        raise ValueError(f"a = {a} no es válido, no puede ser divisible por 2 y/o 13.")
     resultado = ""
 
     # Recorre cada carácter del texto convertido a mayúsculas.
@@ -56,7 +56,7 @@ def descifrar_afin(texto_cifrado, a, b):
 
     # no es posible recuperar el mensaje si no hay inverso modular.
     if a_inv is None:
-        raise ValueError(f"a={a} no tiene inverso modular")
+            raise ValueError(f"a={a} no es válido, a no debe ser divisible por 2 ni por 13")
     resultado = ""
 
     # Recorre cada carácter del texto cifrado.
