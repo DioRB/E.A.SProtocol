@@ -1,5 +1,6 @@
 import heapq
 from app.modelos.grafo import Grafo
+from app.servicios.cifrado import cifrar
 
 def limpiar_distancias(distancias):
 
@@ -37,7 +38,9 @@ class Dijkstra:
         origen: str,
         destino: str,
         lambda_confianza: float = 2.0,
-        lambda_riesgo: float = 1.0
+        lambda_riesgo: float = 1.0,
+        mensaje: str = None,
+        clave_cifrado: dict = None
     ) -> dict:
 
         #VALIDACIONES
@@ -283,8 +286,7 @@ class Dijkstra:
             "confianza_promedio": round(confianza_promedio, 3)
         }
 
-        #RESULTADO
-        return {
+        resultado = {
             "ruta": ruta,
             "detalle_ruta": detalle_ruta,
             "costo": round(
@@ -322,3 +324,22 @@ class Dijkstra:
                 "lambda_riesgo": lambda_riesgo
             }
         }
+
+        # Si el usuario manda un mensaje y una clave, ciframos el mensaje
+        if mensaje is not None and clave_cifrado is not None:
+
+            algoritmo = clave_cifrado.get("algoritmo")
+
+            try:
+                texto_cifrado = cifrar(algoritmo, mensaje, clave_cifrado)
+                resultado["mensaje_cifrado"] = {
+                    "algoritmo": algoritmo,
+                    "cifrado": texto_cifrado,
+                    "clave_usada": clave_cifrado
+                }
+            except ValueError as e:
+                # Si la clave no es válida, avisa el error.
+                resultado["mensaje_cifrado"] = None
+                resultado["cifrado_error"] = str(e)
+
+        return resultado

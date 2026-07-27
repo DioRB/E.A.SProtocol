@@ -36,14 +36,6 @@
         <span class="tool-key">04</span>Eliminar
     </button>
 
-    <button id="" class="tool-btn">
-        <span class="tool-key">05</span>Dijkstra
-    </button>
-
-    <button id="modoCifrado" class="tool-btn">
-        <span class="tool-key">06</span>Cifrado
-    </button>
-
     <button id="reiniciar" class="tool-btn tool-btn--danger">
         <span class="tool-key">×</span>Reiniciar
     </button>
@@ -54,6 +46,8 @@
 
     <div class="contenedor">
 
+        <div class="col-izq">
+
         <section class="graph-panel">
 
             <div class="graph-panel__label">
@@ -63,6 +57,69 @@
             <div id="cy"></div>
 
         </section>
+
+        <section class="panel panel-cif-ruta">
+
+            <div class="panel-cif-ruta-encabezado">
+                <h3>Cifrar mensaje en la ruta</h3>
+                <label class="LineaChk">
+                    <input
+                        type="checkbox"
+                        id="activarCifrado">
+                    Activar cifrado del mensaje
+                </label>
+            </div>
+
+            <div
+                id="bloqueCifradoRuta"
+                style="display:none">
+
+                <div class="panel-cif-ruta-cuerpo">
+
+                    <div class="panel-cif-ruta-col-izq">
+
+                        <label for="algoritmoCifradoRuta">
+                            Algoritmo
+                        </label>
+                        <select id="algoritmoCifradoRuta">
+                            <option value="afin">Cifrado Afín</option>
+                            <option value="hill">Cifrado Hill</option>
+                        </select>
+
+                        <div id="inputsClaveRuta"></div>
+
+                    </div>
+
+                    <div class="panel-cif-ruta-mensaje">
+
+                        <label for="mensajeDijkstra">
+                            Mensaje
+                        </label>
+                        <textarea
+                            id="mensajeDijkstra"
+                            rows="3"
+                            placeholder="Texto a cifrar..."></textarea>
+
+                    </div>
+
+                    <span class="flecha-cif">→</span>
+
+                    <div class="panel-cif-ruta-col-der">
+
+                        <label>Vista previa del cifrado</label>
+                        <div id="cifradoVista" class="caja-cifrado">
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        </div>
 
         <aside class="sidebar">
 

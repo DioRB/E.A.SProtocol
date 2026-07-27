@@ -5,6 +5,7 @@ from app.servicios.simulador import Simulador
 from app.modelos.nodo import Nodo
 from app.modelos.arista import Arista
 from app.algoritmos.dijkstra import Dijkstra
+from app.servicios.cifrado import obtener_algoritmos, cifrar, descifrar
 
 
 
@@ -148,6 +149,10 @@ def registrar_rutas(app):
             1.0
         )
 
+        # Mensaje y clave opcioonales
+        mensaje = datos.get("mensaje")
+        clave_cifrado = datos.get("clave_cifrado")
+
 
         grafo = Simulador.obtener_grafo()
 
@@ -157,8 +162,64 @@ def registrar_rutas(app):
             origen,
             destino,
             lambda_confianza,
-            lambda_riesgo
+            lambda_riesgo,
+            mensaje,
+            clave_cifrado
         )
 
 
         return jsonify(resultado)
+
+    # Lista de algoritmos
+    @app.route("/api/cifrado/algoritmos", methods=["GET"])
+    def listar_algoritmos():
+        return jsonify(obtener_algoritmos())
+
+    # Ruta para cifrar
+    @app.route("/api/cifrado/cifrar", methods=["POST"])
+    def cifrar_texto():
+
+        datos = request.get_json(silent=True)
+        if datos is None:
+            return jsonify({"error": "Cuerpo JSON requerido"}), 400
+
+        algoritmo = datos.get("algoritmo")
+        texto = datos.get("texto", "")
+        clave = datos.get("clave")
+
+        if algoritmo is None:
+            return jsonify({"error": "Falta el campo de algoritmo"}), 400
+        if clave is None:
+            return jsonify({"error": "Falta el campo de clave"}), 400
+
+        try:
+            resultado = cifrar(algoritmo, texto, clave)
+        except ValueError as e:
+            # Clave inválida
+            return jsonify({"error": str(e)}), 400
+
+        return jsonify({"cifrado": resultado})
+
+    # Ruta para descifrar
+    @app.route("/api/cifrado/descifrar", methods=["POST"])
+    def descifrar_texto():
+        datos = request.get_json(silent=True)
+        if datos is None:
+            return jsonify({"error": "Cuerpo JSON requerido"}), 400
+
+        algoritmo = datos.get("algoritmo")
+        texto = datos.get("texto", "")
+        clave = datos.get("clave")
+
+        if algoritmo is None:
+            return jsonify({"error": "Falta el campo de algoritmo"}), 400
+        if clave is None:
+            return jsonify({"error": "Falta el campo de clave"}), 400
+
+        try:
+            resultado = descifrar(algoritmo, texto, clave)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+
+        return jsonify({"texto": resultado})
+    

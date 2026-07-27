@@ -15,6 +15,8 @@
     --estado-alerta: #22C55E;      /* Verde */
     --estado-riesgo: #6B7280;      /* Gris oscuro */
 
+    --error: #A13D2E;              /* Rojo */
+
     /* tipografia */
     --font-display:"Space Grotesk", "IBM Plex Sans", Arial, sans-serif;
     --font-body:"IBM Plex Sans", Arial, sans-serif;
@@ -258,6 +260,11 @@ button:focus-visible{
     outline:2px solid var(--accent);
     outline-offset:1px;
 }
+/* Slider de rango */
+.panel input[type="range"]{
+    width:100%;
+    accent-color:var(--accent);
+}
 
 .btn-primary,
 .btn-secondary{
@@ -305,6 +312,179 @@ button:focus-visible{
     color:var(--ink);
     overflow-y:auto;
     max-height:320px;
+}
+
+/* columna izquierda: apila el grafo y el panel de cifrado */
+
+.col-izq{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    min-width:0;
+}
+
+/* panel de cifrado debajo del grafo */
+
+.panel-cif-ruta{
+    margin-top:0;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.panel-cif-ruta h3{
+    margin-bottom:0;
+}
+
+.panel-cif-ruta-encabezado{
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+.panel-cif-ruta-encabezado .LineaChk{
+    margin-left:auto;
+}
+
+.panel-cif-ruta-cuerpo{
+    display:grid;
+    grid-template-columns:1fr auto auto 1fr;
+    gap:24px;
+    align-items:center;
+}
+
+.panel-cif-ruta-col-izq,
+.panel-cif-ruta-col-der,
+.panel-cif-ruta-mensaje{
+    align-self:center;
+}
+
+.panel-cif-ruta-col-izq{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.panel-cif-ruta-col-izq label,
+.panel-cif-ruta-col-izq select,
+.panel-cif-ruta-col-izq textarea,
+.panel-cif-ruta-col-izq #inputsClaveRuta{
+    width:100%;
+}
+
+.panel-cif-ruta-col-der{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.panel-cif-ruta-col-der label{
+    margin-top:0;
+}
+
+.panel-cif-ruta-mensaje{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:8px;
+}
+
+.flecha-cif{
+    font-family:var(--font-mono);
+    font-size:36px;
+    color:var(--ink-muted);
+    align-self:center;
+    line-height:1;
+}
+
+.panel-cif-ruta input[type="number"],
+.panel-cif-ruta textarea{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+}
+
+.panel-cif-ruta textarea#mensajeDijkstra{
+    resize:vertical;
+    min-height:90px;
+    font-family:var(--font-body);
+}
+
+.caja-cifrado{
+    width:100%;
+    min-height:90px;
+    padding:10px 14px;
+    background:var(--bg);
+    border-left:3px solid var(--accent);
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--ink);
+    letter-spacing:.04em;
+}
+
+.caja-cifrado.error{
+    border-left-color:var(--error);
+    color:var(--error);
+}
+
+.LineaChk{
+    flex:0 0 auto;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:0;
+}
+
+.panel-cif-ruta .LineaChk{
+    text-transform:none;
+    letter-spacing:0;
+    color:var(--ink);
+    font-size:13px;
+}
+
+.LineaChk input{
+    margin:0;
+}
+
+#grillaMatrizRuta table{
+    border-collapse:collapse;
+    margin-top:6px;
+}
+
+#grillaMatrizRuta td{
+    padding:2px;
+}
+
+#grillaMatrizRuta input{
+    width:48px;
+    padding:4px 6px;
+    text-align:center;
+}
+
+/* Área de mensaje descifrado */
+.readout textarea{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+    resize:vertical;
+    min-height:60px;
+    margin-top:8px;
+}
+
+.readout .error-cif{
+    color:#A13D2E;
+    font-size:13px;
+    margin:0;
 }
 
 /* estados posibles de un nodo, para aplicar como clase

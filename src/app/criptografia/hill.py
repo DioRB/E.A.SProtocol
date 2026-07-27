@@ -43,7 +43,7 @@ def calcular_matriz_inversa_mod26(matriz):
     inverso_det_mod26 = inverso_modular(det_mod26)
 
     if inverso_det_mod26 is None:
-        raise ValueError(f"El determinante {det_mod26} no tiene inverso modular, la matriz no es válida como clave")
+        raise ValueError(f"La matriz clave no es invertible, Intente otra disposición de números.")
 
     # Se usa la identidad: adj(K) = det(K) * K^-1
     # np.linalg.inv calcula la inversa de la matriz
@@ -67,7 +67,7 @@ def texto_a_bloques(texto, n):
 def cifrar_hill(texto, clave_matriz):
     # Verifica que la clave sea válida antes de cifrar.
     if not validacion(clave_matriz):
-        raise ValueError("La matriz clave no es válida --> determinante no invertible mod 26")
+        raise ValueError("La matriz clave no es invertible, Intente otra disposición de números.")
 
     n = clave_matriz.shape[0]                                   # Obtiene el tamaño de la matriz clave n*n
     bloques = texto_a_bloques(texto, n)
