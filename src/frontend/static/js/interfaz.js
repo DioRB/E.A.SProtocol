@@ -256,7 +256,10 @@ document
         const grafo = await reiniciarGrafo();
 
         actualizarGrafo(grafo);
-
+        editor.nodoSeleccionado = null;
+        editor.origenArista = null;
+        editor.rutaActual = [];
+        limpiarResaltado();
         cambiarModo("seleccionar");
 
     });
@@ -322,55 +325,11 @@ document
         ()=>{
 
             limpiarResaltado();
+
+            document.getElementById(
+                "resultadoDijkstra"
+            ).innerHTML="";
+
         }
     );
 
-document
-    .getElementById("limpiarRuta")
-    .addEventListener(
-        "click",
-        ()=>{
-            limpiarResaltado();
-            document.getElementById("resultadoDijkstra").innerHTML = "";
-        }
-    );
-
-const sliderConfianza =
-document.getElementById(
-    "lambdaConfianza"
-);
-
-const textoConfianza =
-document.getElementById(
-    "valorLambdaConfianza"
-);
-
-sliderConfianza.addEventListener(
-    "input",
-    ()=>{
-
-        textoConfianza.textContent =
-            sliderConfianza.value;
-
-    }
-);
-
-const sliderRiesgo =
-document.getElementById(
-    "lambdaRiesgo"
-);
-
-const textoRiesgo =
-document.getElementById(
-    "valorLambdaRiesgo"
-);
-
-sliderRiesgo.addEventListener(
-    "input",
-    ()=>{
-
-        textoRiesgo.textContent =
-            sliderRiesgo.value;
-
-    }
-);

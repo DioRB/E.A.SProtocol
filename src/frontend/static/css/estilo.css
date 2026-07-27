@@ -11,9 +11,9 @@
     --accent:#1F4E79;
     --accent-ink:#FFFFFF;
 
-    --estado-seguro:#2F6F4E;
-    --estado-alerta:#B7791F;
-    --estado-riesgo:#A13D2E;
+    --estado-seguro: #2563EB;      /* Azul */
+    --estado-alerta: #22C55E;      /* Verde */
+    --estado-riesgo: #6B7280;      /* Gris oscuro */
 
     /* tipografia */
     --font-display:"Space Grotesk", "IBM Plex Sans", Arial, sans-serif;

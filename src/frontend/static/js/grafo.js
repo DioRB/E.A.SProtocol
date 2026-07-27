@@ -41,6 +41,7 @@ export function dibujarGrafo(data){
 
     });
 
+    console.log("Creando nueva instancia Cytoscape");
     editor.cy = cytoscape({
 
         container:document.getElementById("cy"),
@@ -80,13 +81,14 @@ export function dibujarGrafo(data){
                     "background-color":"#A13D2E"
                 }
             },
-            { selector:"edge", style:{
-                    "line-color":"#9BA5AF",
-                    "target-arrow-color":"#9BA5AF",
-                label:"data(label)",
+            {   selector:"edge",
+                style:{
+                    "line-color":"#9CA3AF",          // Gris (por defecto)
+                    "target-arrow-color":"#9CA3AF",
+                    label:"data(label)",
                     "font-family":"IBM Plex Mono",
                     "font-size":10,
-                width:2,
+                    width:2,
                     "curve-style":"bezier",
                     "target-arrow-shape":"triangle"
                 }
@@ -102,32 +104,32 @@ export function dibujarGrafo(data){
             {
                 selector:"node.ruta",
                 style:{
-                    "background-color":"#2F6F4E",  
-                    "border-width":2,
-                    "border-color":"#173c5c"
+                    "background-color":"#00E5FF",   // Cian brillante
+                    "border-width":3,
+                    "border-color":"#005B96"
                 }
             },
             {
                 selector:"edge.ruta",
                 style:{
-                    "line-color":"#2F6F4E",
-                    "target-arrow-color":"#2F6F4E",
+                    "line-color":"#00E5FF",
+                    "target-arrow-color":"#00E5FF",
                     "width":4 
-                }
-            },
-            {
-                selector:"edge.explorando",
-                style:{
-                    "line-color":"#2F80ED",
-                    "target-arrow-color":"#2F80ED",
-                    "width":4
                 }
             },
             {
                 selector:"edge.correcta",
                 style:{
-                    "line-color":"#27AE60",
-                    "target-arrow-color":"#27AE60",
+                    "line-color":"#FFD60A",          // Amarillo
+                    "target-arrow-color":"#FFD60A",
+                    "width":4
+                }
+            },
+            {
+                selector:"edge.explorando",
+                style:{
+                    "line-color":"#00E5FF",          // Cyan
+                    "target-arrow-color":"#00E5FF",
                     "width":5
                 }
             },
@@ -143,7 +145,7 @@ export function dibujarGrafo(data){
             {
                 selector:"node.visitando",
                 style:{
-                    "background-color":"#F2C94C",
+                    "background-color":"#58513a",
                     "border-width":3,
                     "border-color":"#171A21"
                 }
@@ -425,12 +427,32 @@ export function actualizarGrafo(data){
     });
 
     editor.cy.add(elementos);
+    editor.cy.style().update();
+
+    editor.cy.fit();
+    editor.cy.resize();
+
+
+    console.log("=== NODOS ===");
+
+    editor.cy.nodes().forEach(n => {
+        console.log(
+            n.id(),
+            "clases:", n.classes(),
+            "estado:", n.data("estado"),
+            "color:", n.style("background-color")
+        );
+    });
 }
 
 // Utiliza dijkstra para resaltar la ruta más optima
 export function resaltarRuta(ruta){
 
-    editor.cy.elements().removeClass("ruta");
+    editor.cy.elements()
+        .removeClass("ruta")
+        .removeClass("visitando")
+        .removeClass("explorando")
+        .removeClass("correcta")
 
     for(let i=0;i<ruta.length-1;i++){
 
@@ -447,6 +469,15 @@ export function resaltarRuta(ruta){
         arista.addClass("ruta");
 
     }
+
+    //Todas las aristas que NO pertenecen a la ruta final
+    editor.cy.edges().forEach(edge => {
+
+        if(!edge.hasClass("ruta")){
+            edge.addClass("descartada");
+        }
+
+    });
 
     ruta.forEach(id=>{
 
@@ -511,8 +542,10 @@ export async function animarTimeline(timeline){
 
         );
 
+        editor.cy.elements().removeClass(
+            "visitando"
+        )
     }
-
 }
 
 function mostrarInformacionNodo(nodo){
