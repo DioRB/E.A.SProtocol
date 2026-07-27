@@ -11,11 +11,12 @@ export function dibujarGrafo(data){
 
         elementos.push({
 
-            data:{
-                id:nodo.id,
-                label:nodo.etiqueta,
-                estado:nodo.estado
-            },
+        data:{
+            id:nodo.id,
+            label:nodo.etiqueta,
+            estado:nodo.estado,
+            confianza:nodo.nivel_confianza
+        },
 
             position:{
                 x:nodo.x,
@@ -40,6 +41,7 @@ export function dibujarGrafo(data){
 
     });
 
+    console.log("Creando nueva instancia Cytoscape");
     editor.cy = cytoscape({
 
         container:document.getElementById("cy"),
@@ -61,13 +63,32 @@ export function dibujarGrafo(data){
                     "text-halign":"center"
                 }
             },
-            { selector:"edge", style:{
-                    "line-color":"#9BA5AF",
-                    "target-arrow-color":"#9BA5AF",
-                label:"data(label)",
+            {
+                selector:'node[estado="Seguro"]',
+                style:{
+                    "background-color":"#2F6F4E"
+                }
+            },
+            {
+                selector:'node[estado="En monitoreo"]',
+                style:{
+                    "background-color":"#B7791F"
+                }
+            },
+            {
+                selector:'node[estado="Comprometido"]',
+                style:{
+                    "background-color":"#A13D2E"
+                }
+            },
+            {   selector:"edge",
+                style:{
+                    "line-color":"#9CA3AF",          // Gris (por defecto)
+                    "target-arrow-color":"#9CA3AF",
+                    label:"data(label)",
                     "font-family":"IBM Plex Mono",
                     "font-size":10,
-                width:2,
+                    width:2,
                     "curve-style":"bezier",
                     "target-arrow-shape":"triangle"
                 }
@@ -83,17 +104,50 @@ export function dibujarGrafo(data){
             {
                 selector:"node.ruta",
                 style:{
-                    "background-color":"#2F6F4E",  
-                    "border-width":2,
-                    "border-color":"#173c5c"
+                    "background-color":"#00E5FF",   // Cian brillante
+                    "border-width":3,
+                    "border-color":"#005B96"
                 }
             },
             {
                 selector:"edge.ruta",
                 style:{
-                    "line-color":"#2F6F4E",
-                    "target-arrow-color":"#2F6F4E",
+                    "line-color":"#00E5FF",
+                    "target-arrow-color":"#00E5FF",
                     "width":4 
+                }
+            },
+            {
+                selector:"edge.correcta",
+                style:{
+                    "line-color":"#FFD60A",          // Amarillo
+                    "target-arrow-color":"#FFD60A",
+                    "width":4
+                }
+            },
+            {
+                selector:"edge.explorando",
+                style:{
+                    "line-color":"#00E5FF",          // Cyan
+                    "target-arrow-color":"#00E5FF",
+                    "width":5
+                }
+            },
+            {
+                selector:"edge.descartada",
+                style:{
+                    "line-color":"#EB5757",
+                    "target-arrow-color":"#EB5757",
+                    "line-style":"dashed",
+                    "width":4
+                }
+            },
+            {
+                selector:"node.visitando",
+                style:{
+                    "background-color":"#58513a",
+                    "border-width":3,
+                    "border-color":"#171A21"
                 }
             }
         ],
@@ -228,7 +282,8 @@ export function agregarNodoVisual(nodo){
         data:{
             id:nodo.id,
             label:nodo.etiqueta,
-            estado:nodo.estado
+            estado:nodo.estado,
+            confianza:nodo.nivel_confianza
         },
         position:{
             x:nodo.x,
@@ -350,7 +405,8 @@ export function actualizarGrafo(data){
             data:{
                 id:nodo.id,
                 label:nodo.etiqueta,
-                estado:nodo.estado
+                estado:nodo.estado,
+                confianza:nodo.nivel_confianza
             },
             position:{
                 x:nodo.x,
@@ -371,12 +427,32 @@ export function actualizarGrafo(data){
     });
 
     editor.cy.add(elementos);
+    editor.cy.style().update();
+
+    editor.cy.fit();
+    editor.cy.resize();
+
+
+    console.log("=== NODOS ===");
+
+    editor.cy.nodes().forEach(n => {
+        console.log(
+            n.id(),
+            "clases:", n.classes(),
+            "estado:", n.data("estado"),
+            "color:", n.style("background-color")
+        );
+    });
 }
 
 // Utiliza dijkstra para resaltar la ruta más optima
 export function resaltarRuta(ruta){
 
-    editor.cy.elements().removeClass("ruta");
+    editor.cy.elements()
+        .removeClass("ruta")
+        .removeClass("visitando")
+        .removeClass("explorando")
+        .removeClass("correcta")
 
     for(let i=0;i<ruta.length-1;i++){
 
@@ -394,6 +470,15 @@ export function resaltarRuta(ruta){
 
     }
 
+    //Todas las aristas que NO pertenecen a la ruta final
+    editor.cy.edges().forEach(edge => {
+
+        if(!edge.hasClass("ruta")){
+            edge.addClass("descartada");
+        }
+
+    });
+
     ruta.forEach(id=>{
 
         editor.cy.getElementById(id)
@@ -402,11 +487,65 @@ export function resaltarRuta(ruta){
 }
 
 export function limpiarResaltado(){
-
     editor.cy.elements()
-        .removeClass("ruta")
-        .removeClass("seleccionado");
+    .removeClass("ruta")
+    .removeClass("seleccionado")
+    .removeClass("visitando")
+    .removeClass("explorando")
+    .removeClass("correcta")
+    .removeClass("descartada")
 
+}
+
+
+export async function animarTimeline(timeline){
+
+    limpiarResaltado();
+
+    for(const evento of timeline){
+
+        editor.cy.elements().removeClass(
+            "visitando explorando"
+        );
+
+        if(evento.tipo==="visita"){
+
+            editor.cy
+                .getElementById(evento.nodo)
+                .addClass("visitando");
+
+        }
+
+        if(evento.tipo==="relajacion"){
+
+            const arista = editor.cy
+                .edges()
+                .filter(edge=>
+
+                    edge.source().id()===evento.desde &&
+                    edge.target().id()===evento.hasta
+
+                );
+
+            if(evento.actualizado){
+            arista.addClass("correcta");
+            }
+            else{
+                arista.addClass("descartada");
+            }       
+
+        }
+
+        await new Promise(resolve=>
+
+            setTimeout(resolve,450)
+
+        );
+
+        editor.cy.elements().removeClass(
+            "visitando"
+        )
+    }
 }
 
 function mostrarInformacionNodo(nodo){

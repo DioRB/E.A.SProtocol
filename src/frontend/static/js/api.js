@@ -179,7 +179,7 @@ export async function reiniciarGrafo(){
 
 // IMPLEMENTACIÓN DEL ALGORITMO DE DIJKSTRA
 
-export async function ejecutarDijkstra(origen,destino){
+export async function ejecutarDijkstra(origen,destino,lambda_confianza,lambda_riesgo){
 
 
     const response = await fetch(
@@ -192,11 +192,11 @@ export async function ejecutarDijkstra(origen,destino){
                 "Content-Type":"application/json"
             },
 
-            body:JSON.stringify({
-
-                origen:origen,
-                destino:destino
-
+            body: JSON.stringify({
+                origen,
+                destino,
+                lambda_confianza,
+                lambda_riesgo
             })
 
         }
