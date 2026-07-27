@@ -36,14 +36,6 @@
         <span class="tool-key">04</span>Eliminar
     </button>
 
-    <button id="" class="tool-btn">
-        <span class="tool-key">05</span>Dijkstra
-    </button>
-
-    <button id="modoCifrado" class="tool-btn">
-        <span class="tool-key">06</span>Cifrado
-    </button>
-
     <button id="reiniciar" class="tool-btn tool-btn--danger">
         <span class="tool-key">×</span>Reiniciar
     </button>
@@ -54,6 +46,8 @@
 
     <div class="contenedor">
 
+        <div class="col-izq">
+
         <section class="graph-panel">
 
             <div class="graph-panel__label">
@@ -63,6 +57,45 @@
             <div id="cy"></div>
 
         </section>
+
+        <section class="panel panel-cif-ruta">
+
+            <h3>Cifrar mensaje en la ruta</h3>
+
+            <label class="LineaChk">
+                <input
+                    type="checkbox"
+                    id="activarCifrado">
+                Activar cifrado del mensaje
+            </label>
+
+            <div
+                id="bloqueCifradoRuta"
+                style="display:none">
+
+                <label for="algoritmoCifradoRuta">
+                    Algoritmo
+                </label>
+                <select id="algoritmoCifradoRuta">
+                    <option value="afin">Cifrado Afín</option>
+                    <option value="hill">Cifrado Hill</option>
+                </select>
+
+                <div id="inputsClaveRuta"></div>
+
+                <label for="mensajeDijkstra">
+                    Mensaje
+                </label>
+                <textarea
+                    id="mensajeDijkstra"
+                    rows="3"
+                    placeholder="Texto a cifrar antes de enviar"></textarea>
+
+            </div>
+
+        </section>
+
+        </div>
 
         <aside class="sidebar">
 
@@ -152,41 +185,6 @@
                     max="5"
                     step="0.1"
                     value="1">
-
-                <div class="CajaCifrado">
-
-                    <label class="LineaChk">
-                        <input
-                            type="checkbox"
-                            id="activarCifrado">
-                        Cifrar mensaje en la ruta
-                    </label>
-
-                    <div
-                        id="bloqueCifradoRuta"
-                        style="display:none">
-
-                        <label for="algoritmoCifradoRuta">
-                            Algoritmo
-                        </label>
-                        <select id="algoritmoCifradoRuta">
-                            <option value="afin">Cifrado Afín</option>
-                            <option value="hill">Cifrado Hill</option>
-                        </select>
-
-                        <div id="inputsClaveRuta"></div>
-
-                        <label for="mensajeDijkstra">
-                            Mensaje
-                        </label>
-                        <textarea
-                            id="mensajeDijkstra"
-                            rows="3"
-                            placeholder="Texto a cifrar antes de enviar"></textarea>
-
-                    </div>
-
-                </div>
 
                 <button id="ejecutarDijkstra" class="btn-primary">
                     Buscar ruta

@@ -307,6 +307,110 @@ button:focus-visible{
     max-height:320px;
 }
 
+/* columna izquierda: apila el grafo y el panel de cifrado */
+
+.col-izq{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    min-width:0;
+}
+
+/* panel de cifrado debajo del grafo */
+
+.panel-cif-ruta{
+    margin-top:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px 24px;
+    align-items:flex-start;
+}
+
+.panel-cif-ruta h3{
+    width:100%;
+    margin-bottom:0;
+}
+
+.panel-cif-ruta > label,
+.panel-cif-ruta select,
+.panel-cif-ruta textarea,
+.panel-cif-ruta #inputsClaveRuta{
+    flex:1 1 240px;
+    min-width:220px;
+}
+
+.panel-cif-ruta input[type="number"],
+.panel-cif-ruta textarea{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+}
+
+.panel-cif-ruta textarea{
+    resize:vertical;
+    min-height:60px;
+    font-family:var(--font-body);
+}
+
+.LineaChk{
+    flex:0 0 auto;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:0;
+}
+
+.panel-cif-ruta .LineaChk{
+    text-transform:none;
+    letter-spacing:0;
+    color:var(--ink);
+    font-size:13px;
+}
+
+.LineaChk input{
+    margin:0;
+}
+
+#grillaMatrizRuta table{
+    border-collapse:collapse;
+    margin-top:6px;
+}
+
+#grillaMatrizRuta td{
+    padding:2px;
+}
+
+#grillaMatrizRuta input{
+    width:48px;
+    padding:4px 6px;
+    text-align:center;
+}
+
+/* Área de mensaje descifrado */
+.readout textarea{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+    resize:vertical;
+    min-height:60px;
+    margin-top:8px;
+}
+
+.readout .error-cif{
+    color:#A13D2E;
+    font-size:13px;
+    margin:0;
+}
+
 /* estados posibles de un nodo, para aplicar como clase
    adicional en #nodoEstado o en .data-row si se desea */
 

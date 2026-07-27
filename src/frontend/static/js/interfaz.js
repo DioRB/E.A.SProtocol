@@ -302,14 +302,6 @@ document
 
     });
 
-document
-    .getElementById("modoCifrado")
-    .addEventListener("click", () => {
-
-        cambiarModo("cifrado");
-
-    });
-
 
 document
     .getElementById("reiniciar")
@@ -479,7 +471,6 @@ function dibujarInputsClave(contenedor, algoritmo){
                     input.type = "number";
                     input.value = "1";
                     input.id = "celdaRuta_" + i + "_" + j;
-                    input.style.width = "40px";
 
                     celda.appendChild(input);
                     fila.appendChild(celda);
