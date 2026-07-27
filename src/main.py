@@ -1,10 +1,8 @@
-from flask import Flask, render_template
+from app import crear_app
 
-app = Flask(__name__, template_folder="frontend")
-
-@app.route("/")
-def index():
-    return render_template("index.html")
+app = crear_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+

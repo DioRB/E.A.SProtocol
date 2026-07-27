@@ -1,81 +1,419 @@
-\documentclass[11pt]{article}
+\documentclass[conference]{IEEEtran}
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[spanish]{babel}
+\addto\captionsspanish{
+    \renewcommand{\abstractname}{Abstract}
+}
+\renewcommand{\IEEEkeywordsname}{Keywords}
+
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{geometry}
-\usepackage{graphicx}
 \usepackage{float}
-\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
 
-\geometry{margin=2.5cm}
+\title{
+E.A.S. Protocol: Sistema interactivo para el análisis de redes
+mediante algoritmos de grafos y criptografía clásica
+}
 
-\captionsetup{
-    font=small
+\author{
+    \IEEEauthorblockN{
+    Aimer Esteban Garcia Rojas,
+    Jair Gomez Narvaez,
+    Diego Alejandro Robayo Cordoba
+    }
+
+    \IEEEauthorblockA{
+    Programa de Ingeniería de Sistemas\\
+    Universidad Nacional de Colombia\\
+    Julio 2026
+    }
 }
 
 \begin{document}
 
-\begin{titlepage}
-    \centering
+\maketitle
+\thispagestyle{empty}
+\pagestyle{plain}
+\setcounter{page}{1}
 
-    \vspace{1cm}
+\begin{abstract}
+    Discrete mathematics provides the theoretical foundation for numerous applications in computer science. This paper presents the design and implementation of an interactive web application that integrates graph algorithms and classical cryptographic techniques into a single educational platform. The system enables users to create, edit, and visualize weighted graphs dynamically, as well as execute an extended implementation of Dijkstra's shortest-path algorithm that considers edge weights, communication risk, and node reliability. The reliability of each node can be modified through classical cryptographic techniques, including the Caesar, Hill and Affine ciphers, allowing users to analyze how these changes influence the computed shortest path. This approach provides an interactive environment for exploring and understanding key concepts of discrete mathematics through graphical visualization and experimentation. The application follows a modular client-server architecture, with a Python backend responsible for graph management and algorithm execution, and a JavaScript frontend that provides real-time interaction and visualization. Experimental evaluation using simulated network scenarios demonstrates that the platform correctly performs graph editing, shortest-path computation, and cryptographic operations while offering an intuitive environment for studying the practical application of discrete mathematics. The resulting system serves as an educational tool that combines algorithm visualization with interactive experimentation, facilitating both learning and future extensions.
+\end{abstract}
 
-    {\large UNIVERSIDAD NACIONAL DE COLOMBIA\par}
-    {\large Facultad de Ingeniería\par}
-    {\large Departamento de Ingeniería de Sistemas e Industrial\par}
 
-    \vspace{2.5cm}
+\begin{IEEEkeywords}
+    Graph, Dijkstra Algorithm, Classical Cryptography, Interactive Visualization.
+\end{IEEEkeywords}
 
-    {\Huge \textbf{Proyecto Final: E.A.S Protocol}\par}
+\section{Introducción}
+Las matemáticas discretas constituyen uno de los pilares fundamentales de las ciencias de la computación y de múltiples ramas de la ingeniería y las matemáticas. Entre estos se encutentran los conjuntos, la lógica, las relaciones, conteo, combinatoria, entre otros\cite{apuntes}. En particular, la teoría de grafos proporciona modelos para representar redes de comunicación y resolver problemas de enrutamiento [1], mientras que la teoría de números sustenta numerosos algoritmos criptográficos utilizados para proteger la información [2]. Debido a ello, comprender estas estructuras resulta indispensable para el diseño y análisis de soluciones computacionales.
 
-    \vspace{1cm}
+Sin embargo, muchos de estos temas suelen abordarse de manera independiente y mediante ejemplos exclusivamente teóricos, lo que dificulta apreciar la relación que existe entre ellos y su aplicación en problemas reales. En particular, la teoría de grafos permite modelar redes de comunicación y encontrar rutas eficientes entre diferentes puntos, mientras que la criptografía clásica proporciona mecanismos para proteger la información que circula por dichas redes. En la práctica, ambos conceptos se complementan constantemente, ya que una comunicación eficiente también debe considerar aspectos relacionados con la seguridad y la confiabilidad de la información.
 
-    {\Large Matemáticas Discretas I\par}
+Con el propósito de integrar estos conceptos en un mismo entorno, este proyecto desarrolla un simulador interactivo de comunicación segura basado en grafos. La aplicación permite crear, modificar y visualizar dinámicamente una red de comunicación representada mediante un grafo ponderado dirigido, ejecutar una versión extendida del algoritmo de Dijkstra que incorpora el peso de las aristas, el riesgo de comunicación y el nivel de confiabilidad de los nodos, y analizar visualmente la ruta óptima obtenida. De manera complementaria, el sistema incorpora implementaciones de los cifrados clásicos César, Afín y Hill, con el fin de mostrar cómo diferentes mecanismos criptográficos pueden influir en las condiciones de seguridad de la red simulada.
 
-    \vfill
+El sistema fue desarrollado siguiendo una arquitectura cliente-servidor modular, utilizando Python para la implementación de los algoritmos y la lógica del sistema, y JavaScript para la construcción de una interfaz gráfica interactiva. Esta arquitectura facilita la separación de responsabilidades entre los diferentes componentes del proyecto y permite extender la plataforma con nuevos algoritmos o funcionalidades en futuras versiones, pensando en un ambiente de acceso por internet para mayor facilidad.
 
-    Aimer Esteban Garcia Rojas
+Como resultado, se obtuvo una herramienta educativa que integra algoritmos de teoría de grafos y criptografía clásica dentro de un mismo entorno visual e interactivo. Además de permitir la experimentación con diferentes configuraciones de la red, la plataforma facilita la comprensión de conceptos fundamentales de las matemáticas discretas mediante la observación directa del comportamiento de los algoritmos y del efecto que tienen las decisiones de seguridad sobre las rutas de comunicación.
 
-    Jair Gomez Narvaez
-
-    Diego Alejandro Robayo Córdoba
-
-    \vspace{3cm}
-
-    Docente: Jhoan Sebastián Tenjo García
-
-    \vfill
-
-    Bogotá, Colombia\\
-    \today
-
-\end{titlepage}
-
-\newpage
-
-\section{Resumen.}
-
-\section{Introducción.}
 
 \section{Fundamentos de matemáticas discretas.}
+\subsection{Teoría de grafos.}
+Un grafo es una estructura discreta formada por un conjunto de vértices (o nodos) y un conjunto de aristas que representan las relaciones existentes entre dichos vértices \cite{Mat. DisC. Ingles Nodo Arista}.
+La teoría de grafos constituye uno de los pilares de las matemáticas discretas y de las ciencias de la computación, debido a su capacidad para modelar sistemas formados por entidades y relaciones entre ellas. Los grafos permiten representar redes de transporte, sistemas eléctricos, redes sociales, redes de computadores y redes de comunicación, entre muchas otras aplicaciones. Esta representación facilita la aplicación de algoritmos de optimización y análisis para resolver problemas de conectividad, búsqueda de caminos y planificación de rutas \cite{Mat. DisC. Jose Francisco Intro Grafo}.
+
+En este trabajo, la red de comunicación se modela mediante un grafo ponderado dirigido, donde cada vértice representa un dispositivo de la red y cada arista representa un canal de comunicación entre dos dispositivos, de la cual solamente se puede transmitir en la dirección a la cual esta apunta. Ya que no todos los canales de comunicación son iguales, puesto que unos pueden ser más eficientes que otros, a estas aristas se le asigna un peso \cite{Mat. DisC. Jose Francisco Peso Grafo} que determina la dificultad  y/o efeciencia al recorrerlo. Con esto, al grafo se le denota como un grafo ponderado. A diferencia del algoritmo clásico de camino mínimo, cada nodo incorpora un nivel de confianza y cada enlace un nivel de riesgo, parámetros que influyen directamente en el costo utilizado durante la búsqueda de rutas.
+
+Así, el tipo de grafo que va a protagonizar el simulador es aquel que se representa mediante la formual
+\[
+G=(V, E, P)
+\]
+donde $V$ son los dispositivos en la red, $E$ representa los canales de comunicación y $w$ asigna un costo a cada enlace
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\textwidth]{Img/GrafoPonderadoDirigido.png}
+    \caption{\small Grafo dirigido ponderado, donde los pesos representan el costo asociado a cada enlace de comunicación.}
+\end{figure}
+
+
+\subsection{Algoritmos sobre grafos: Dijkstra y penalización}
+Uno de los problemas más estudiados en teoría de grafos es el problema del camino mínimo (Shortest Path Problem), el cual consiste en determinar la ruta de menor costo entre un nodo origen y un nodo destino dentro de un grafo ponderado.
+
+Entre los algoritmos propuestos para resolver este problema, el algoritmo de Dijkstra es uno de los más utilizados cuando los pesos de las aristas son no negativos. Su funcionamiento consiste en expandir progresivamente los nodos con menor costo acumulado conocido, actualizando las distancias de sus vecinos mediante un proceso conocido como relajación de aristas. Al finalizar la ejecución, el algoritmo garantiza encontrar el camino de costo mínimo desde el nodo origen hacia todos los nodos alcanzables del grafo\cite{Mat. DisC. Jose Francisco Dijkstra}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\textwidth]{Img/GrafoPonderadoDirigidoDijkstra.png}
+    \caption{\small Camino más corto entre A y G usando Dijkstra implementado en un grafo ponderado}
+\end{figure}
+
+En este proyecto no se emplea el costo clásico basado únicamente en el peso de las aristas. Con el fin de representar aspectos relacionados con la seguridad de una red de comunicación, el costo de cada enlace incorpora dos factores adicionales: el nivel de riesgo asociado a la comunicación y el nivel de confianza del dispositivo destino. Cada costo se entiende expande con,
+\[
+C_{ij}=P_{ij}+\lambda_c(1-C_j)+\lambda_rR_{ij}
+\]
+donde, 
+
+$C_{ij}$: costo total de recorrer la arista
+
+$P_{ij}$: peso o distancia de la arista
+
+$\lambda_c$: factor de penalización por confianza
+
+$C_j$: nivel de confianza del nodo destino
+
+$\lambda_r$: factor de penalización por riesgo
+
+$R_{ij}$: riesgo de la arista
+
+Como consecuencia, una ruta con menor distancia puede dejar de ser la mejor alternativa si atraviesa nodos con baja confianza o enlaces con un riesgo elevado. En contraste, una ruta ligeramente más larga puede resultar óptima al ofrecer un mayor nivel de seguridad. Para esta sitación. Dijkstra ahora busca el costo minimo, el cual es 
+\[
+C_{ruta}=min\sum(P_i\lambda_c(1-C_i)+\lambda_rR_i)
+\]
+
+\subsection{Teoría de números aplicada a la criptografía}
+La criptografía se creó con el objetivo de transformar un mensaje legible en otro que únicamente pueda ser interpretado por quienes conocen la información necesaria para revertir el proceso. \cite{Mat. DisC. Ingles Cripto Uso Historia}
+Hoy en dia, la criptografía constituye una de las principales aplicaciones de las matemáticas discretas dentro de la seguridad informática.\cite{Mat. DisC. Ingles Cripto Uso hoy} Aunque actualmente existen algoritmos criptográficos modernos de alta complejidad, los cifrados clásicos continúan siendo ampliamente utilizados con fines educativos debido a que permiten comprender conceptos fundamentales como la aritmética modular, el máximo común divisor, los inversos modulares y las transformaciones matriciales. Entre los metodos de encriptación clásica utilizados, en general se implementaron tres.
+
+\subsubsection{Cifrado César y Afín}
+El cifrado César desplaza cada letra un número fijo de posiciones dentro del alfabeto. El cifrado Afín generaliza esta idea mediante una transformación afín sobre el conjunto de residuos módulo 26, definida por
+\[
+E(x)=(ax+b) \mod 26
+\]
+donde,
+
+$x$: posición de la letra
+
+$a,b$: claves
+
+$a$ es coprimo con 26
+
+De esta forma se cifra el mensaje para cada letra. En cuanto al descifrado, se busca invertir las operaciones realizadas durante el cifrado. Como la transformación original multiplica por a y posteriormente suma b, primero es necesario eliminar el desplazamiento restando b, y luego deshacer la multiplicación utilizando el inverso modular de a. Así, la ecuación es 
+
+\[
+D(y)=a^{-1}(y-b) \mod 26
+\]
+donde,
+
+$y$: letra cifrada
+
+$a^{-1}$: inverso modular de $a$
+
+Para garantizar que el texto pueda recuperarse correctamente, el parámetro a debe poseer inverso multiplicativo módulo 26. Esto ocurre únicamente cuando a y 26 son coprimos, condición que se verifica mediante el algoritmo de Euclides para calcular el máximo común divisor.
+
+\subsubsection{Cifrado Hill}
+Este algoritmo cifra grupos completos de letras simultáneamente mediante la multiplicación de un vector de texto por una matriz clave. Gracias a ello, la sustitución de cada símbolo depende de los demás caracteres del bloque, aumentando considerablemente la complejidad del análisis criptográfico.
+
+En este método, cada letra del alfabeto se representa mediante un número entero entre 0 y 25. Posteriormente, el mensaje se divide en bloques de longitud $n$, donde $n$ corresponde al tamaño de la matriz clave.
+
+Así, sea $P$ el vector correspondiente a un bloque del mensaje y $K$ la matriz clave dimensión $n \times n$. El proceso de cifrado se denfine como 
+\[
+C=KP \mod 26
+\]
+
+Para la implementación desarrollada se utiliza una matriz cuadrada de tamaño $3 \times 3$, permitiendo cifrar tres caracteres en cada iteración del algoritmo. Antes de comenzar el proceso, el texto se convierte a mayúsculas, se eliminan los caracteres que no pertenecen al alfabeto y, cuando es necesario, se completa el último bloque agregando la letra $X$ hasta alcanzar el tamaño requerido.
+
+Una vez validada la matriz clave, el descifrado requiere calcular su inversa módulo 26. Para ello se emplea la identidad matricial
+\[
+K^{-1}=\det (K)^{-1}adj(K) \mod 26
+\]
+
+Para el decifrado, al obtener la matriz inversa, cada bloque cifrado se transforma nuevamente mediante
+\[
+P=K^{-1}C \mod 26
+\]
+
+
+En conjunto, los conceptos anteriores constituyen la base matemática de la aplicación desarrollada. La teoría de grafos permite modelar la red de comunicación, el algoritmo de Dijkstra determina las rutas óptimas considerando múltiples criterios de costo, mientras que la teoría de números y el álgebra lineal sustentan los algoritmos criptográficos implementados. La integración de estos elementos permite representar, analizar y modificar dinámicamente el comportamiento de una red de comunicación segura dentro de un entorno interactivo.
 
 \section{Diseño de la solución.}
 
-\section{Implementación.}
+El sistema fue diseñado siguiendo una arquitectura cliente-servidor, con el objetivo de separar la lógica de negocio de la interfaz gráfica y facilitar futuras ampliaciones del proyecto. La aplicación se compone de un cliente web encargado de la interacción con el usuario y de un servidor que administra el estado del grafo, ejecuta los algoritmos de búsqueda y procesa las operaciones criptográficas. La comunicación entre ambos componentes se realiza mediante solicitudes HTTP que intercambian información en formato JSON. Esta organización permite mantener una clara separación de responsabilidades. Mientras el cliente se ocupa de la representación visual del grafo y de capturar las acciones del usuario, el servidor concentra todas las operaciones relacionadas con la manipulación de la red y el procesamiento de los algoritmos implementados.
 
-\section{Pruebas y resultados.}
 
-\section{Discusión.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{Img/Arquitectura.png}
+    \caption{\small Arquitectura general del sistema}
+\end{figure}
 
-\section{Conclusiones y trabajo futuro.}
+En la página principal se representa la red de comunicación mediante un grafo dirigio y ponderado. Cada dispisitivo de red corresponde a un vértice, mientras que los canales de comunicación se representan mediante aristas dirigidas entre dichos vértices, como ya se ha explicado anteriormente. Como parte del diseño de interacción, se incorporó una barra de herramientas superior que agrupa las principales operaciones de modificación del grafo: creación de nodos, creación de aristas, eliminación de elementos y restauración del escenario inicial. Estas funcionalidades permiten al usuario construir y modificar dinámicamente la topología de la red antes de ejecutar los algoritmos de análisis.
 
-\section{Contribución de los integrantes}
+Nodo: El modo de creación de nodos permite añadir nuevos dispositivos dentro de la red mediante una selección directa sobre el área de visualización del grafo. Para cada nodo generado, el sistema solicita un identificador único, una etiqueta descriptiva y un valor numérico correspondiente al nivel de confianza del dispositivo. Esta información es almacenada como parte de las características del vértice y posteriormente utilizada en el cálculo de rutas.
 
-\section{Referencias}
+Arista: La creación de enlaces se realiza mediante la selección de un nodo origen y un nodo destino, estableciendo una relación dirigida entre ambos dispositivos. Cada conexión requiere la asignación de un peso asociado al costo de transmisión y un valor de riesgo que representa la posibilidad de una comunicación insegura. Estos parámetros intervienen posteriormente en la evaluación de las rutas calculadas por el algoritmo de Dijkstra modificado.
 
+Eliminar: El sistema permite modificar la estructura de la red mediante la eliminación tanto de nodos como de aristas existentes. Cuando un nodo es eliminado, también se eliminan las conexiones asociadas, manteniendo la consistencia de la representación del grafo.
+
+Reiniciar: La opción de reinicio permite recuperar la configuración inicial del escenario de prueba, descartando las modificaciones realizadas durante la interacción. Esta funcionalidad facilita la repetición de experimentos bajo las mismas condiciones iniciales y permite evaluar nuevamente los algoritmos implementados.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{Img/GrafoInicial.png}
+    \caption{\small Grafo inicial con la barra de herramientas}
+\end{figure}
+
+
+Al no tener una herramienta de edición activa, el usuario puede interactuar libremente con la representación gráfica de la red, permitiendo desplazar los nodos para modificar su distribución visual. Además, mediante la selección de un vértice es posible consultar sus características asociadas en el panel de información ubicado en la parte derecha de la interfaz. Este panel presenta atributos como identificador, etiqueta, estado y nivel de confianza, permitiendo relacionar las propiedades de cada dispositivo con el comportamiento del algoritmo de búsqueda de rutas.
+
+En la misma sección se encuentra el módulo de búsqueda de rutas seguras. Este componente recibe como entrada un nodo de origen, un nodo destino y los parámetros de ponderación relacionados con la confianza de los dispositivos y el riesgo de los enlaces. A partir de estos datos, el sistema ejecuta una versión modificada del algoritmo de Dijkstra, donde el costo de recorrido no depende únicamente del peso de la arista, sino también de penalizaciones asociadas a la seguridad de la comunicación. Como salida, el usuario obtiene la ruta seleccionada, el costo total calculado y un análisis general de las condiciones de seguridad de la trayectoria encontrada.
+
+Finalmente, la plataforma incorpora un módulo de criptografía clásica orientado a la protección de mensajes dentro de la red simulada. Este módulo permite seleccionar diferentes métodos de cifrado, entre ellos los algoritmos Hill y Afín. Para el cifrado Hill, el usuario debe proporcionar valores para la matriz de clave de tamaño definido por el parámetro n, verificando que esta sea invertible bajo aritmética modular para garantizar el proceso de descifrado. En el caso del cifrado Afín, se ingresan los parámetros a y b, donde a debe cumplir la condición de ser coprimo con el módulo utilizado. Ambos algoritmos reciben un mensaje como entrada y generan como salida una versión cifrada del texto.
+
+Las entradas y salidas del sistema se pueden resumir en las siguientes tablas
+
+\begin{table}[H]
+    \caption{Entradas del sistema}
+    \label{tab:entradas}
+    \centering
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{Entrada} & \textbf{Descripción} \\
+    \midrule
+    Creación de nodo & Identificador, nombre, confianza y posición \\
+    Creación de arista & Origen, destino, peso y riesgo \\
+    Consulta de ruta & Nodo origen y nodo destino \\
+    Cifrado & Texto y claves del algoritmo seleccionado \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+    \caption{Salidas del sistema}
+    \label{tab:salidas}
+    \centering
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{Salida} & \textbf{Descripción} \\
+    \midrule
+    Grafo actualizado & Cambios realizados por el usuario \\
+    Ruta óptima & Camino encontrado por Dijkstra \\
+    Costo total & Valor acumulado de la ruta \\
+    Métricas & Peso, riesgo y penalización total \\
+    Texto cifrado & Resultado del algoritmo criptográfico \\
+    Texto descifrado & Recuperación del mensaje original \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+En genera, el flujo completo para hacer uso del sistema, con sus funcionalidades se presenta en la siguiente figura
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{Img/RutaUs.png}
+    \caption{\small Flujo general de uso}
+\end{figure}
+
+\section{Implementación}
+
+\subsection{Herramientas y tecnologías utilizadas}
+El sistema fue desarrollado siguiendo una arquitectura cliente-servidor, con una separación entre la lógica encargada del procesamiento de datos y la interfaz encargada de la interacción con el usuario. Para el desarrollo del servidor se utilizó Python debido a su facilidad para la implementación de estructuras discretas y algoritmos, además de la disponibilidad de librerías orientadas al manejo de datos y operaciones matemáticas. El backend fue construido utilizando el framework Flask, encargado de administrar las solicitudes realizadas por el cliente, ejecutar los algoritmos definidos y retornar los resultados en formato JSON.
+
+La interfaz gráfica fue desarrollada mediante tecnologías web como HTML, CSS y JavaScript. Para la representación interactiva de la red se utilizó la biblioteca Cytoscape.js, la cual permite visualizar grafos dinámicamente, modificar posiciones de los vértices y resaltar elementos específicos durante la ejecución de los algoritmos. Esta herramienta permitió relacionar directamente la representación matemática del grafo con una representación visual comprensible para el usuario.
+
+\subsection{Arquitectura y estructura del sistema}
+La aplicación fue organizada mediante una arquitectura modular, donde cada componente tiene una responsabilidad específica dentro del funcionamiento general del sistema. Esta división permite facilitar el mantenimiento, la ampliación de funcionalidades y la integración de nuevos algoritmos.
+
+El backend se estructuró en cuatro componentes principales:
+
+\subsubsection{Modelos}
+Contienen las estructuras utilizadas para representar los elementos necesarios para la contrucción del grafo. Estos son nodo
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.15\textwidth]{Img/ClaseNodo.png}
+    \caption{\small Modelo de nodo}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.15\textwidth]{Img/ClaseArista.png}
+    \caption{\small Modelo de arista}
+\end{figure}
+
+El modelo de grafo es más complejo, puesto que relaciona las clases de nodo y de arista con listas y diccionarios para permitir relacionarlos entre sí y formar una unica estructura, con todos los metodos necesarios para trabajar sobre el grafo.
+
+\subsubsection{Algoritmos}
+Se encuentra el desarrollo e implementación de el algorimo de busqueda de caminos Dijkstra con las modificaciones necesarias para tener en cuenta el riesgo, confianza y penalización por seguridad. Se hizo uso de la libreria heapq basada en una cola de prioridad.
+
+\subsubsection{Criptografía}
+Posee las dos implementaciones de criptografía clásica utilizada, las cuales son el cifrado Afín por generalización del cifrado de César y el cifrado de Hill.  Cada uno posee sus propias confirmaciones de parametros y métodos de cifrado y descifrado. Se hizo uso de la libreria numpy para las operaciones con matrices y vectores
+
+\subsubsection{Servicios}
+En este apartado se encuentran los servicios de simulador y cifrado. El simulador simplemente construye un grafo base de prueba con funciones sencillas para reiniciar y obtener un grafo. Por el otro lado, el cifrado toma el contenido de Criptografía y lo moldea para poder ser funcional interactivamente con el frontend.
+
+\subsection{Comunicación entre componentes mediante rutas HTTP}
+La comunicación entre la interfaz gráfica y la lógica del sistema se realizó mediante rutas HTTP implementadas utilizando el framework Flask. Estas rutas funcionan como una capa intermedia entre el cliente y los algoritmos internos, permitiendo que las acciones realizadas por el usuario en la interfaz sean transformadas en operaciones sobre el modelo de datos.
+
+Las solicitudes enviadas desde el cliente utilizan el formato JSON para transmitir información relacionada con los nodos, aristas, parámetros de búsqueda y mensajes a procesar. Posteriormente, el servidor interpreta estos datos, ejecuta la operación correspondiente y retorna una respuesta en formato JSON que permite actualizar dinámicamente la interfaz.
+
+Las rutas implementadas se agrupan según la responsabilidad que cumplen dentro del sistema:
+
+\begin{itemize}
+
+    \item \textbf{Gestión del grafo:}
+    Incluye las operaciones relacionadas con la creación, consulta, modificación y eliminación de elementos de la red. Las rutas asociadas a los nodos permiten agregar nuevos dispositivos, obtener la información existente y eliminar elementos del modelo. De manera similar, las rutas de aristas permiten crear y eliminar conexiones entre dispositivos indicando sus atributos de peso y riesgo.
+
+    \item \textbf{Inicialización y restauración del sistema:}
+    La ruta de reinicio permite recuperar el grafo inicial de prueba definido dentro del simulador. Esta funcionalidad facilita realizar nuevas pruebas sin conservar modificaciones realizadas durante una ejecución anterior.
+
+    \item \textbf{Ejecución de algoritmos:}
+    La ruta asociada a Dijkstra recibe los nodos origen y destino junto con los parámetros de ponderación relacionados con confianza y riesgo. Esta información es enviada al algoritmo modificado de búsqueda de caminos, retornando la ruta encontrada, costos calculados, nodos visitados y métricas adicionales.
+
+    \item \textbf{Servicios criptográficos:}
+    Las rutas de cifrado permiten consultar los algoritmos disponibles y ejecutar procesos de cifrado o descifrado. Estas reciben el algoritmo seleccionado, el texto y la clave correspondiente, validando las restricciones matemáticas necesarias antes de realizar la operación.
+
+\end{itemize}
+
+\subsection{Estructura del cliente web}
+La interfaz del sistema fue desarrollada utilizando HTML, CSS y JavaScript, organizando la lógica del cliente mediante módulos independientes. Esta separación permite mantener aisladas las responsabilidades relacionadas con la comunicación con el servidor, la manipulación del grafo y la interacción con el usuario.
+
+Los principales componentes del cliente son:
+
+\begin{itemize}
+
+    \item \textbf{Módulo de comunicación con el backend (api.js):}
+    Este componente concentra las funciones encargadas de realizar solicitudes HTTP hacia las rutas Flask. A través de este módulo se gestionan operaciones como creación y eliminación de nodos, creación y eliminación de aristas, reinicio del grafo y ejecución de algoritmos de cifrado.
+
+    \item \textbf{Módulo de manejo y actualización de la interfaz (interfaz.js):}
+    Funciona como controlador principal de la interacción entre el usuario y las funcionalidades disponibles en la aplicación. Su responsabilidad es gestionar los eventos generados por los componentes HTML, actualizar los controles visuales y coordinar las solicitudes realizadas al servidor.
+    
+    Este módulo administra los diferentes modos de operación del editor, permitiendo cambiar entre creación de nodos, creación de aristas, eliminación y selección de elementos. Aactúa como intermediario entre las acciones realizadas por el usuario y los servicios disponibles en el backend, transformando las respuestas obtenidas en elementos visuales comprensibles.
+
+    \item \textbf{Módulo de estado del editor (editor.js):}
+    Mantiene la información temporal relacionada con la interacción del usuario, como el modo seleccionado actualmente, el nodo seleccionado, el nodo inicial utilizado para crear una arista y la instancia activa del grafo visualizado.
+
+    \item \textbf{Módulo de visualización del grafo (grafo.js)}
+    Contiene la lógica encargada de la representación y manipulación visual de la red mediante la biblioteca Cytoscape.js. Su función principal es transformar la información del grafo recibida desde el servidor en elementos gráficos compuestos por nodos y aristas. Este también implementa la edición visual del grafo y modifica dinamicamente los estilos visuales en el proceso de cálculo de rutas.
+
+    \item \textbf{Módulo principal de inicialización (app.js):}
+    Funciona como punto de entrada de la aplicación cliente y tiene como responsabilidad integrar los diferentes módulos desarrollados en JavaScript. Su objetivo es realizar la carga inicial de información, establecer la representación gráfica del sistema y preparar los componentes necesarios para la interacción del usuario.
+
+\end{itemize}
+
+
+\section{Conclusiones}
+El desarrollo de este proyecto permitió integrar un par de todos los conceptos fundamentales de las matemáticas discretas denro de una aplicación interactiva orientada al aprendizaje, usando como contexto y simulación, el modelamiento de redes de comunicación. A partir de de la teoría de grafos fue posible representar una red mediante vértices y aristas ponderadas, donde cada dispositivo y canal de comunicación poseen características propias que influyen en la selección de rutas al aplicarse el algoritmo Dijkstra.
+
+La modificación e implementación de este algoritmo de busqueda permitió extender un concepto tradicional de busqueda de camino mínimo, incorporando factores adicionales que pretenden relacionarse con la seguridad en la red. Mediante la adición de parámetros como el riesgo de los enlaces y el nivel de confianza de los dispositivos, fue posible obtener rutas que no solamente consideran el costo asociado a la distancia o peso del enlace, sino también condiciones relacionadas con la confiabilidad de la comunicación.
+
+Además, la integración de algoritmos de criptografía clásica permitió complementar el modelo de comunicación segura, demostrando la relación existente entre estructuras discretas, teoría de números y mecanismos básicos de protección de información. La implementación de los cifrados Afín y Hill permitió observar cómo conceptos como el máximo común divisor, inversos modulares y operaciones matriciales en aritmética modular tienen aplicaciones directas en sistemas de seguridad.
+
+Desde el punto de vista del desarrollo de software, la separación entre backend y frontend permitió construir una arquitectura modular, donde los algoritmos, la gestión de datos y la representación visual poseen responsabilidades independientes, buscando una buena organización, arquitectura y una mayor facilidad a la hora de integrar partes separadas que se construian en el equipo de trabajo a lo largo del tiempo de desarrollo. Esto facilitó la interacción del usuario con el sistema y permitió visualizar de manera dinámica los procesos internos, especialmente durante la ejecución del algoritmo de búsqueda de rutas.
+
+En general, el proyecto cumplió con el objetivo planteado de crear una herramienta educativa que relaciona conceptos de matemáticas discretas con una aplicación práctica en redes y seguridad informática. La plataforma desarrollada permite experimentar con diferentes configuraciones de red y observar cómo las modificaciones realizadas afectan los resultados obtenidos.
+
+\section{Trabajo futuro}
+Aunque la versión desarrollada cumple con la representación y simulación de una red pequeña, existen diferentes oportunidades de mejora para ampliar sus capacidades y acercarla a escenarios más reales.
+
+Una primera mejora consiste en implementar algoritmos adicionales de análisis de grafos, como búsqueda en anchura, búsqueda en profundidad, características adicionales que se tenían contempladas, pero a causa del tiempo y fluidez fueron descartadas. La idea es poder incluir diferentes tipos algoritmos que permitan comparar diferentes estrategias de exploración y de optimización en una misma red.
+
+Respecto al algoritmo de búsqueda de rutas, una extensión posible sería incorporar modelos de costo más avanzados, donde factores como congestión de red, latencia, ancho de banda o disponibilidad temporal e incluso condiciones físicas puedan influir en la selección del camino óptimo. También sería posible comparar el comportamiento del algoritmo modificado frente a la versión tradicional de Dijkstra mediante diferentes escenarios de prueba.
+
+En el componente de seguridad, una mejora importante sería incluir algoritmos criptográficos modernos y protocolos utilizados actualmente en redes de comunicación. Los métodos implementados en esta versión corresponden a técnicas históricas de criptografía clásica, útiles para comprender los fundamentos matemáticos y poder formar una idea de comprensión, pero limitadas frente a los requerimientos actuales de seguridad.
+
+Otra línea de trabajo consiste en ampliar la persistencia de información mediante una base de datos que permita almacenar diferentes configuraciones de red, usuarios, simulaciones realizadas y resultados obtenidos. Esto permitiría convertir la aplicación en una herramienta de experimentación más completa.
+
+\section{Contribuciones de los integrantes.}
+
+A pesar de que cada uno tuvo un rol y un trabajo parcialmente definido en un principio, todos los integrantes tuvieron interactuaron casi con todas las partes del código para ir adaptandolo a cada una de las nuevas funcionalidades y caracteristicas que se iban implementado, así como revisiones de pull request. De igual manera, se puede generalizar las aportaciones de cada uno al desarrollo del proyecto.
+
+Aimer Garcia: Creación de los algoritmos de criptografía Afín y Hill adaptados según las necesidades, al igual que su respectiva implementación en el frontend para su correcto funcionamiento con las intervenciones del usuario, validaciones de entradas y mensajes de error.
+
+Jair Gomez: Creación del algoritmo de Dijkstra modificado y las modificaciones necesarias para su correcta adaptación. De igual manera, la organización del backend con las rutas necesarias y actualizaciones de frontend para un apartado visual más interactivo y atractivo.
+
+Diego Robayo: Creación de los modelos del grafo. Creación de las rutas principales para hacer uso de los metodos http. Estructuración principal de los modelos JavaScript para la comunicación entre frontend y backend. Herramientas de control y modificación del grafo visual. Desarrollo del artículo.
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\begin{thebibliography}{99}
+
+\bibitem{apuntes}
+J. Tenjo,
+\emph{Notas de clase: Matemáticas Discretas I},
+Universidad Nacional de Colombia, 2026.
+
+\bibitem{Mat. DisC. Ingles Nodo Arista}
+L. Lovász, J. Pelikán, K. Vesztergombi
+\emph{Discrete Mathematics: Elementary and Beyond}.
+Springer. 2000. pp. 126
+
+\bibitem{Mat. DisC. Jose Francisco Intro Grafo}
+J. Villalpando y A. García,
+\emph{Matemáticas Discretas, aplicaciones y ejercicios}.
+Patria. 2014. pp. 186
+
+\bibitem{Mat. DisC. Jose Francisco Peso Grafo}
+J. Villalpando y A. García,
+\emph{Matemáticas Discretas, aplicaciones y ejercicios}.
+Patria. 2014. pp. 212
+
+\bibitem{Mat. DisC. Jose Francisco Dijkstra}
+J. Villalpando y A. García,
+\emph{Matemáticas Discretas, aplicaciones y ejercicios}.
+Patria. 2014. pp. 224-225
+
+\bibitem{Mat. DisC. Ingles Cripto Uso Historia}
+L. Lovász, J. Pelikán, K. Vesztergombi
+\emph{Discrete Mathematics: Elementary and Beyond}.
+Springer. 2000. pp. 242
+
+\bibitem{Mat. DisC. Ingles Cripto Uso hoy}
+L. Lovász, J. Pelikán, K. Vesztergombi
+\emph{Discrete Mathematics: Elementary and Beyond}.
+Springer. 2000. pp. v
+
+
+\end{thebibliography}
 
 \end{document}

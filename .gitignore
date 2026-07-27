@@ -4,3 +4,5 @@ Docs/Articulo.fls
 Docs/Articulo.log
 Docs/Articulo.synctex.gz
 src/.vscode
+src/modelos/__pycache__/
+src/servicios/__pycache__/

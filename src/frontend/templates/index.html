@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E.A.S Protocol</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+<body>
+
+<header>
+    <p class="eyebrow">Sistema de análisis de rutas seguras</p>
+    <h1>E.A.S Protocol</h1>
+</header>
+
+<nav class="toolbar">
+
+    <button id="modoSeleccionar" class="tool-btn">
+        <span class="tool-key">01</span>Seleccionar
+    </button>
+
+    <button id="modoNodo" class="tool-btn">
+        <span class="tool-key">02</span>Nodo
+    </button>
+
+    <button id="modoArista" class="tool-btn">
+        <span class="tool-key">03</span>Arista
+    </button>
+
+    <button id="modoEliminar" class="tool-btn">
+        <span class="tool-key">04</span>Eliminar
+    </button>
+
+    <button id="reiniciar" class="tool-btn tool-btn--danger">
+        <span class="tool-key">×</span>Reiniciar
+    </button>
+
+</nav>
+
+<main>
+
+    <div class="contenedor">
+
+        <div class="col-izq">
+
+        <section class="graph-panel">
+
+            <div class="graph-panel__label">
+                <span>Vista del grafo</span>
+            </div>
+
+            <div id="cy"></div>
+
+        </section>
+
+        <section class="panel panel-cif-ruta">
+
+            <div class="panel-cif-ruta-encabezado">
+                <h3>Cifrar mensaje en la ruta</h3>
+                <label class="LineaChk">
+                    <input
+                        type="checkbox"
+                        id="activarCifrado">
+                    Activar cifrado del mensaje
+                </label>
+            </div>
+
+            <div
+                id="bloqueCifradoRuta"
+                style="display:none">
+
+                <div class="panel-cif-ruta-cuerpo">
+
+                    <div class="panel-cif-ruta-col-izq">
+
+                        <label for="algoritmoCifradoRuta">
+                            Algoritmo
+                        </label>
+                        <select id="algoritmoCifradoRuta">
+                            <option value="afin">Cifrado Afín</option>
+                            <option value="hill">Cifrado Hill</option>
+                        </select>
+
+                        <div id="inputsClaveRuta"></div>
+
+                    </div>
+
+                    <div class="panel-cif-ruta-mensaje">
+
+                        <label for="mensajeDijkstra">
+                            Mensaje
+                        </label>
+                        <textarea
+                            id="mensajeDijkstra"
+                            rows="3"
+                            placeholder="Texto a cifrar..."></textarea>
+
+                    </div>
+
+                    <span class="flecha-cif">→</span>
+
+                    <div class="panel-cif-ruta-col-der">
+
+                        <label>Vista previa del cifrado</label>
+                        <div id="cifradoVista" class="caja-cifrado">
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        </div>
+
+        <aside class="sidebar">
+
+            <section class="panel" id="panelNodo">
+
+                <h3>Información del nodo</h3>
+
+                <p id="sinSeleccion" class="hint">
+                    Seleccione un nodo
+                </p>
+
+                <div id="infoNodo" style="display:none">
+
+                    <dl class="data-list">
+
+                        <div class="data-row">
+                            <dt>ID</dt>
+                            <dd id="nodoId"></dd>
+                        </div>
+
+                        <div class="data-row">
+                            <dt>Etiqueta</dt>
+                            <dd id="nodoEtiqueta"></dd>
+                        </div>
+
+                        <div class="data-row">
+                            <dt>Estado</dt>
+                            <dd id="nodoEstado"></dd>
+                        </div>
+
+                        <div class="data-row">
+                            <dt>Confianza</dt>
+                            <dd id="nodoConfianza"></dd>
+                        </div>
+
+                        <div class="data-row">
+                            <dt>Conexiones</dt>
+                            <dd id="nodoConexiones"></dd>
+                        </div>
+
+                        <div class="data-row">
+                            <dt>Vecinos</dt>
+                            <dd id="nodoVecinos"></dd>
+                        </div>
+
+                    </dl>
+
+                </div>
+
+            </section>
+
+            <section class="panel" id="dijkstraPanel">
+
+                <h3>Buscar ruta segura</h3>
+
+                <label for="origenDijkstra">Origen</label>
+                <select id="origenDijkstra"></select>
+
+                <label for="destinoDijkstra">
+                    Destino
+                </label>
+
+                <select id="destinoDijkstra"></select>
+
+                <label for="lambdaConfianza">
+                    &lambda; Confianza:
+                    <span id="valorLambdaConfianza">2.0</span>
+                </label>
+
+                <input
+                    type="range"
+                    id="lambdaConfianza"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="2">
+
+                <label for="lambdaRiesgo">
+                    &lambda; Riesgo:
+                    <span id="valorLambdaRiesgo">1.0</span>
+                </label>
+
+                <input
+                    type="range"
+                    id="lambdaRiesgo"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="1">
+
+                <button id="ejecutarDijkstra" class="btn-primary">
+                    Buscar ruta
+                </button>
+
+                <div id="resultadoDijkstra" class="readout"></div>
+
+                <button id="limpiarRuta" class="btn-secondary">
+                    Limpiar ruta
+                </button>
+
+            </section>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+<script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>

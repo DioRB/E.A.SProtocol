@@ -1,0 +1,518 @@
+:root{
+
+    /* color */
+    --bg:#EEF0F2;
+    --panel:#FFFFFF;
+    --ink:#171A21;
+    --ink-muted:#5B6470;
+    --line:#C9CFD6;
+    --line-strong:#9BA5AF;
+
+    --accent:#1F4E79;
+    --accent-ink:#FFFFFF;
+
+    --estado-seguro: #2563EB;      /* Azul */
+    --estado-alerta: #22C55E;      /* Verde */
+    --estado-riesgo: #6B7280;      /* Gris oscuro */
+
+    --error: #A13D2E;              /* Rojo */
+
+    /* tipografia */
+    --font-display:"Space Grotesk", "IBM Plex Sans", Arial, sans-serif;
+    --font-body:"IBM Plex Sans", Arial, sans-serif;
+    --font-mono:"IBM Plex Mono", "Courier New", monospace;
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.5;
+}
+
+/* ---------- encabezado ---------- */
+
+header{
+    background:var(--accent);
+    color:var(--accent-ink);
+    padding:28px 40px 24px;
+    border-bottom:3px solid var(--ink);
+}
+
+.eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    margin-bottom:6px;
+}
+
+h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:28px;
+    letter-spacing:.01em;
+}
+
+/* ---------- barra de herramientas ---------- */
+
+.toolbar{
+    width:100%;
+    display:flex;
+    gap:0;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+}
+
+.tool-btn{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 20px;
+    border:none;
+    border-right:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:background-color .12s ease, color .12s ease;
+}
+
+.tool-key{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-muted);
+}
+
+.tool-btn:hover{
+    background:var(--bg);
+}
+
+.tool-btn.activo{
+    background:var(--accent);
+    color:var(--accent-ink);
+}
+
+.tool-btn.activo .tool-key{
+    color:rgba(255,255,255,.75);
+}
+
+.tool-btn--danger:hover{
+    background:var(--estado-riesgo);
+    color:#fff;
+}
+
+.tool-btn--danger:hover .tool-key{
+    color:#fff;
+}
+
+.eliminar{
+    cursor:not-allowed;
+}
+
+/* ---------- layout principal ---------- */
+
+main{
+    width:92%;
+    max-width:1320px;
+    margin:36px auto 60px;
+}
+
+.contenedor{
+    display:grid;
+    grid-template-columns:3fr 1fr;
+    gap:24px;
+    align-items:start;
+}
+
+/* ---------- panel del grafo ---------- */
+
+.graph-panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+}
+
+.graph-panel__label{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+}
+
+#cy{
+    width:100%;
+    height:620px;
+    background-color:var(--panel);
+    background-image:radial-gradient(var(--line) 1px, transparent 1px);
+    background-size:22px 22px;
+}
+
+/* ---------- barra lateral ---------- */
+
+.sidebar{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    padding:18px 20px;
+}
+
+.panel h3{
+    font-family:var(--font-display);
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    color:var(--ink);
+}
+
+.hint{
+    font-size:13px;
+    color:var(--ink-muted);
+    font-style:italic;
+}
+
+/* datos de nodo, formato tabla */
+
+.data-list{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+}
+
+.data-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:8px 0;
+    border-bottom:1px solid var(--bg);
+}
+
+.data-row:last-child{
+    border-bottom:none;
+}
+
+.data-row dt{
+    font-size:12px;
+    color:var(--ink-muted);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.data-row dd{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--ink);
+    text-align:right;
+}
+
+/* formularios */
+
+.panel label{
+    display:block;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--ink-muted);
+    margin-top:12px;
+    margin-bottom:4px;
+}
+
+.panel select{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+}
+
+.panel select:focus,
+.tool-btn:focus-visible,
+button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+}
+/* Slider de rango */
+.panel input[type="range"]{
+    width:100%;
+    accent-color:var(--accent);
+}
+
+.btn-primary,
+.btn-secondary{
+    width:100%;
+    margin-top:14px;
+    padding:10px;
+    border:1px solid var(--accent);
+    font-family:var(--font-body);
+    font-size:13px;
+    font-weight:500;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    cursor:pointer;
+    transition:background-color .12s ease, color .12s ease;
+}
+
+.btn-primary{
+    background:var(--accent);
+    color:#fff;
+}
+
+.btn-primary:hover{
+    background:#173c5c;
+}
+
+.btn-secondary{
+    background:var(--panel);
+    color:var(--accent);
+}
+
+.btn-secondary:hover{
+    background:var(--bg);
+}
+
+/* resultado de dijkstra, estilo lectura/consola */
+
+.readout{
+    margin-top:14px;
+    padding:10px 12px;
+    min-height:20px;
+    background:var(--bg);
+    border-left:3px solid var(--line-strong);
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--ink);
+    overflow-y:auto;
+    max-height:320px;
+}
+
+/* columna izquierda: apila el grafo y el panel de cifrado */
+
+.col-izq{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    min-width:0;
+}
+
+/* panel de cifrado debajo del grafo */
+
+.panel-cif-ruta{
+    margin-top:0;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.panel-cif-ruta h3{
+    margin-bottom:0;
+}
+
+.panel-cif-ruta-encabezado{
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+.panel-cif-ruta-encabezado .LineaChk{
+    margin-left:auto;
+}
+
+.panel-cif-ruta-cuerpo{
+    display:grid;
+    grid-template-columns:1fr auto auto 1fr;
+    gap:24px;
+    align-items:center;
+}
+
+.panel-cif-ruta-col-izq,
+.panel-cif-ruta-col-der,
+.panel-cif-ruta-mensaje{
+    align-self:center;
+}
+
+.panel-cif-ruta-col-izq{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.panel-cif-ruta-col-izq label,
+.panel-cif-ruta-col-izq select,
+.panel-cif-ruta-col-izq textarea,
+.panel-cif-ruta-col-izq #inputsClaveRuta{
+    width:100%;
+}
+
+.panel-cif-ruta-col-der{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.panel-cif-ruta-col-der label{
+    margin-top:0;
+}
+
+.panel-cif-ruta-mensaje{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:8px;
+}
+
+.flecha-cif{
+    font-family:var(--font-mono);
+    font-size:36px;
+    color:var(--ink-muted);
+    align-self:center;
+    line-height:1;
+}
+
+.panel-cif-ruta input[type="number"],
+.panel-cif-ruta textarea{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+}
+
+.panel-cif-ruta textarea#mensajeDijkstra{
+    resize:vertical;
+    min-height:90px;
+    font-family:var(--font-body);
+}
+
+.caja-cifrado{
+    width:100%;
+    min-height:90px;
+    padding:10px 14px;
+    background:var(--bg);
+    border-left:3px solid var(--accent);
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--ink);
+    letter-spacing:.04em;
+}
+
+.caja-cifrado.error{
+    border-left-color:var(--error);
+    color:var(--error);
+}
+
+.LineaChk{
+    flex:0 0 auto;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:0;
+}
+
+.panel-cif-ruta .LineaChk{
+    text-transform:none;
+    letter-spacing:0;
+    color:var(--ink);
+    font-size:13px;
+}
+
+.LineaChk input{
+    margin:0;
+}
+
+#grillaMatrizRuta table{
+    border-collapse:collapse;
+    margin-top:6px;
+}
+
+#grillaMatrizRuta td{
+    padding:2px;
+}
+
+#grillaMatrizRuta input{
+    width:48px;
+    padding:4px 6px;
+    text-align:center;
+}
+
+/* Área de mensaje descifrado */
+.readout textarea{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+    resize:vertical;
+    min-height:60px;
+    margin-top:8px;
+}
+
+.readout .error-cif{
+    color:#A13D2E;
+    font-size:13px;
+    margin:0;
+}
+
+/* estados posibles de un nodo, para aplicar como clase
+   adicional en #nodoEstado o en .data-row si se desea */
+
+.estado-seguro{ color:var(--estado-seguro); font-weight:600; }
+.estado-alerta{ color:var(--estado-alerta); font-weight:600; }
+.estado-riesgo{ color:var(--estado-riesgo); font-weight:600; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width:860px){
+
+    .contenedor{
+        grid-template-columns:1fr;
+    }
+
+    .toolbar{
+        flex-wrap:wrap;
+    }
+
+    .tool-btn{
+        flex:1 1 auto;
+        justify-content:center;
+    }
+
+    #cy{
+        height:440px;
+    }
+
+}
