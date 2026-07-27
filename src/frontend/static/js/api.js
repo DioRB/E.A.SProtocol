@@ -177,9 +177,9 @@ export async function reiniciarGrafo(){
 }
 
 
-// IMPLEMENTACIÓN DEL ALGORITMO DE DIJKSTRA
+// IMPLEMENTACIÓN DEL ALGORITMO DE DIJKSTRA Y CIFRADO DE MENSAJES
 
-export async function ejecutarDijkstra(origen,destino,lambda_confianza,lambda_riesgo){
+export async function ejecutarDijkstra(origen,destino,lambda_confianza,lambda_riesgo,mensaje,clave_cifrado){
 
 
     const response = await fetch(
@@ -196,7 +196,9 @@ export async function ejecutarDijkstra(origen,destino,lambda_confianza,lambda_ri
                 origen,
                 destino,
                 lambda_confianza,
-                lambda_riesgo
+                lambda_riesgo,
+                mensaje,
+                clave_cifrado
             })
 
         }
@@ -208,6 +210,42 @@ export async function ejecutarDijkstra(origen,destino,lambda_confianza,lambda_ri
         throw new Error(
             "Error ejecutando Dijkstra"
         );
+
+    }
+
+
+    return await response.json();
+
+}
+
+
+// Llamamos al endpoint para descifrar un texto.
+export async function descifrarTexto(algoritmo, texto, clave){
+
+    const response = await fetch(
+        "/api/cifrado/descifrar",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                algoritmo,
+                texto,
+                clave
+            })
+
+        }
+    );
+
+
+    if(!response.ok){
+
+        const data = await response.json();
+        throw new Error(data.error || "Error descifrando");
 
     }
 

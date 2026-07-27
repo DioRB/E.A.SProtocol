@@ -1,5 +1,5 @@
 // Interfaz que relaciona todos los elementos graficos de la página con las funciones adjudicadas
-import { reiniciarGrafo, ejecutarDijkstra, obtenerNodos} from "./api.js";
+import { reiniciarGrafo, ejecutarDijkstra, obtenerNodos, descifrarTexto} from "./api.js";
 import {actualizarGrafo,resaltarRuta,limpiarResaltado,animarTimeline} from "./grafo.js";
 import { editor } from "./editor.js";
 
@@ -143,6 +143,43 @@ function mostrarResultado(resultado){
 
     }
 
+    let bloqueCifrado = "";
+
+    if(resultado.mensaje_cifrado){
+
+        bloqueCifrado = `
+            <hr>
+            <h4>Mensaje cifrado</h4>
+            <p>
+                <strong>Algoritmo:</strong>
+                ${resultado.mensaje_cifrado.algoritmo}
+            </p>
+            <p>
+                <strong>Cifrado:</strong>
+                ${resultado.mensaje_cifrado.cifrado}
+            </p>
+            <button id="btnDescifrarResultado" class="btn-secondary">
+                Descifrar
+            </button>
+            <textarea
+                id="textoDescifradoResultado"
+                rows="3"
+                readonly
+                style="display:none; margin-top:8px"></textarea>
+        `;
+
+    } else if(resultado.cifrado_error){
+
+        bloqueCifrado = `
+            <hr>
+            <h4>Mensaje cifrado</h4>
+            <p class="error-cif">
+                ${resultado.cifrado_error}
+            </p>
+        `;
+
+    }
+
     panel.innerHTML=`
         <h3>Resultado Dijkstra</h3>
         <p>
@@ -194,8 +231,41 @@ function mostrarResultado(resultado){
             λ riesgo:
             ${resultado.parametros.lambda_riesgo}
         </p>
+        ${bloqueCifrado}
 
     `;
+
+    const btnDescifrar =
+        document.getElementById("btnDescifrarResultado");
+
+    if(btnDescifrar){
+
+        btnDescifrar.addEventListener("click", async () => {
+
+            const salida =
+                document.getElementById("textoDescifradoResultado");
+
+            try{
+
+                const r = await descifrarTexto(
+                    resultado.mensaje_cifrado.algoritmo,
+                    resultado.mensaje_cifrado.cifrado,
+                    resultado.mensaje_cifrado.clave_usada
+                );
+
+                salida.value = r.texto;
+                salida.style.display = "block";
+
+            } catch(error){
+
+                salida.value = "Error: " + error.message;
+                salida.style.display = "block";
+
+            }
+
+        });
+
+    }
 }
 
 
@@ -295,12 +365,27 @@ document
             ).value
         );
 
+        // Si está activo mandamos mensaje y clave
+        let mensaje = null;
+        let clave_cifrado = null;
+
+        const checkboxCifrado =
+            document.getElementById("activarCifrado");
+
+        if (checkboxCifrado.checked) {
+            mensaje =
+                document.getElementById("mensajeDijkstra").value;
+            clave_cifrado = leerClaveCifradoRuta();
+        }
+
         const resultado =
         await ejecutarDijkstra(
             origen,
             destino,
             lambdaConfianza,
-            lambdaRiesgo
+            lambdaRiesgo,
+            mensaje,
+            clave_cifrado
         );
 
         console.log(resultado);
@@ -332,4 +417,174 @@ document
 
         }
     );
+
+
+// ===== CIFRADO EN LA RUTA DIJKSTRA =====
+
+// Dibuja los inputs de la clave dependiendo del algoritmo
+// Si es afin, a y b, para hill, n y las celdas de la matriz
+function dibujarInputsClave(contenedor, algoritmo){
+
+    contenedor.innerHTML = "";
+
+    if(algoritmo === "afin"){
+
+        contenedor.innerHTML = `
+            <label for="aRuta">a</label>
+            <input type="number" id="aRuta" min="1" max="25" value="5">
+
+            <label for="bRuta">b</label>
+            <input type="number" id="bRuta" min="0" max="25" value="8">
+        `;
+
+        return;
+    }
+
+    if(algoritmo === "hill"){
+
+        contenedor.innerHTML = `
+            <label for="nRuta">Tamaño n</label>
+            <input type="number" id="nRuta" min="2" max="5" value="2">
+            <div id="grillaMatrizRuta"></div>
+        `;
+
+        const inputN =
+            document.getElementById("nRuta");
+
+        const pintarGrilla = () => {
+
+            const n = Number(inputN.value);
+            const grilla =
+                document.getElementById("grillaMatrizRuta");
+
+            grilla.innerHTML = "";
+
+            if(n < 2 || n > 5){
+                return;
+            }
+
+            // Una tabla simple para que se vean las filas y columnas.
+            const tabla = document.createElement("table");
+
+            for(let i = 0; i < n; i++){
+
+                const fila = document.createElement("tr");
+
+                for(let j = 0; j < n; j++){
+
+                    const celda = document.createElement("td");
+                    const input =
+                        document.createElement("input");
+
+                    input.type = "number";
+                    input.value = "1";
+                    input.id = "celdaRuta_" + i + "_" + j;
+                    input.style.width = "40px";
+
+                    celda.appendChild(input);
+                    fila.appendChild(celda);
+
+                }
+
+                tabla.appendChild(fila);
+
+            }
+
+            grilla.appendChild(tabla);
+
+        };
+
+        inputN.addEventListener("change", pintarGrilla);
+        pintarGrilla();
+
+    }
+
+}
+
+// Lee los inputs actuales del bloque y devuelve el objeto clave listo para enviar.
+function leerClaveCifradoRuta(){
+
+    const algoritmo =
+        document.getElementById("algoritmoCifradoRuta").value;
+
+    if(algoritmo === "afin"){
+
+        return {
+            algoritmo: "afin",
+            a: Number(document.getElementById("aRuta").value),
+            b: Number(document.getElementById("bRuta").value)
+        };
+
+    }
+
+    if(algoritmo === "hill"){
+
+        const n = Number(document.getElementById("nRuta").value);
+        const matriz = [];
+
+        for(let i = 0; i < n; i++){
+
+            const fila = [];
+
+            for(let j = 0; j < n; j++){
+
+                const input =
+                    document.getElementById("celdaRuta_" + i + "_" + j);
+
+                fila.push(Number(input.value));
+
+            }
+
+            matriz.push(fila);
+
+        }
+
+        return {
+            algoritmo: "hill",
+            n: n,
+            matriz: matriz
+        };
+
+    }
+
+    return null;
+
+}
+
+// Mostrar o no el bloque cuando se marca el checkbox del cifrado
+document
+    .getElementById("activarCifrado")
+    .addEventListener("change", () => {
+
+        const bloque =
+            document.getElementById("bloqueCifradoRuta");
+
+        if(document.getElementById("activarCifrado").checked){
+            bloque.style.display = "block";
+        } else {
+            bloque.style.display = "none";
+        }
+
+    });
+
+// Cambiar el algoritmo limpia los inputs y dibuja nuevos
+document
+    .getElementById("algoritmoCifradoRuta")
+    .addEventListener("change", () => {
+
+        const algoritmo =
+            document.getElementById("algoritmoCifradoRuta").value;
+
+        const contenedor =
+            document.getElementById("inputsClaveRuta");
+
+        dibujarInputsClave(contenedor, algoritmo);
+
+    });
+
+// Inputs por defecto al cargar la página
+dibujarInputsClave(
+    document.getElementById("inputsClaveRuta"),
+    document.getElementById("algoritmoCifradoRuta").value
+);
 

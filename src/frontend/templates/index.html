@@ -153,6 +153,41 @@
                     step="0.1"
                     value="1">
 
+                <div class="CajaCifrado">
+
+                    <label class="LineaChk">
+                        <input
+                            type="checkbox"
+                            id="activarCifrado">
+                        Cifrar mensaje en la ruta
+                    </label>
+
+                    <div
+                        id="bloqueCifradoRuta"
+                        style="display:none">
+
+                        <label for="algoritmoCifradoRuta">
+                            Algoritmo
+                        </label>
+                        <select id="algoritmoCifradoRuta">
+                            <option value="afin">Cifrado Afín</option>
+                            <option value="hill">Cifrado Hill</option>
+                        </select>
+
+                        <div id="inputsClaveRuta"></div>
+
+                        <label for="mensajeDijkstra">
+                            Mensaje
+                        </label>
+                        <textarea
+                            id="mensajeDijkstra"
+                            rows="3"
+                            placeholder="Texto a cifrar antes de enviar"></textarea>
+
+                    </div>
+
+                </div>
+
                 <button id="ejecutarDijkstra" class="btn-primary">
                     Buscar ruta
                 </button>
