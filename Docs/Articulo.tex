@@ -123,7 +123,7 @@ La criptografía se creó con el objetivo de transformar un mensaje legible en o
 Hoy en dia, la criptografía constituye una de las principales aplicaciones de las matemáticas discretas dentro de la seguridad informática.\cite{Mat. DisC. Ingles Cripto Uso hoy} Aunque actualmente existen algoritmos criptográficos modernos de alta complejidad, los cifrados clásicos continúan siendo ampliamente utilizados con fines educativos debido a que permiten comprender conceptos fundamentales como la aritmética modular, el máximo común divisor, los inversos modulares y las transformaciones matriciales. Entre los metodos de encriptación clásica utilizados, en general se implementaron tres.
 
 \subsubsection{Cifrado César y Afín}
-El cifrado César desplaza cada letra un número fijo de posiciones dentro del alfabeto. El cifrado Afín generaliza esta idea mediante una transformación afín sobre el conjunto de residuos módulo 26, definida por
+El cifrado César desplaza cada letra un número fijo de posiciones dentro del alfabeto\cite{Cesar desplaz}. El cifrado Afín generaliza esta idea mediante una transformación afín sobre el conjunto de residuos módulo 26, definida por
 \[
 E(x)=(ax+b) \mod 26
 \]
@@ -158,11 +158,16 @@ Así, sea $P$ el vector correspondiente a un bloque del mensaje y $K$ la matriz 
 C=KP \mod 26
 \]
 
-Para la implementación desarrollada se utiliza una matriz cuadrada de tamaño $3 \times 3$, permitiendo cifrar tres caracteres en cada iteración del algoritmo. Antes de comenzar el proceso, el texto se convierte a mayúsculas, se eliminan los caracteres que no pertenecen al alfabeto y, cuando es necesario, se completa el último bloque agregando la letra $X$ hasta alcanzar el tamaño requerido.
+Para la implementación desarrollada es posible utilizar una matriz cuadrada de tamaño desde $2 \times 2$ hasta $7 \times 7$, permitiendo cifrar tres caracteres en cada iteración del algoritmo. Antes de comenzar el proceso, el texto se convierte a mayúsculas, se eliminan los caracteres que no pertenecen al alfabeto y, cuando es necesario, se completa el último bloque agregando la letra $X$ hasta alcanzar el tamaño requerido.
 
 Una vez validada la matriz clave, el descifrado requiere calcular su inversa módulo 26. Para ello se emplea la identidad matricial
 \[
 K^{-1}=\det (K)^{-1}adj(K) \mod 26
+\]
+
+No cualquier matriz puede utilizarse como clave del cifrado Hill. Para que el proceso de crifrado sea posible, la matriz debe ser invertible en aritmetica modular\cite{Invertible hill gcd}. Esta condicion implica que su determinante debe poseer inverso módulo 26, es decir
+\[
+\gcd(\det(K), 26) = 1
 \]
 
 Para el decifrado, al obtener la matriz inversa, cada bloque cifrado se transforma nuevamente mediante
@@ -340,6 +345,97 @@ Los principales componentes del cliente son:
 \end{itemize}
 
 
+\section{Pruebas y resultados}
+Para validar el funcionamiento de la aplicación se realizaron diferentes pruebas orientadas a verificar la correcta integración entre los algoritmos implementados, la gestión de datos y la interfaz gráfica. Las pruebas se realizaron utilizando escenarios simulados de redes pequeñas, donde fue posible modificar la estructura del grafo, ejecutar búsquedas de rutas y evaluar el comportamiento de los algoritmos bajo diferentes configuraciones.
+
+\subsection{Pruebas de creación y modificación del grafo}
+Como primera prueba se verificó la capacidad del sistema para construir dinámicamente una red de comunicación. Se crearon diferentes dispositivos representados mediante nodos, asignando valores de confianza individuales, y posteriormente se agregaron canales de comunicación con diferentes pesos y niveles de riesgo.
+
+El resultado obtenido fue satisfactorio, ya que la aplicación permitió modificar estructura de la red en tiempo real reflejando los cambios innmediatamente de forma visual a gusto del usuario.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Img/CambiosGrafo.png}
+    \caption{\small Prueba modificación de grafo}
+\end{figure}
+
+Es posible realizar una mejora en la que haya la opción de editar lás características y atributos de los nodos y aristas, sin tener que eliminarlos y volverlos a crear, para mejorar la fluides del simulador y no crear espacios vacios que no aportan demasiado.
+Como limitación o error, se menciona la situación en la cual, luego de recargar la página los nodos creados por el usuario van a tomar ciertas posiciones base y no las que tenian luego de los cambios, por lo que puede dañar visualmente las ideas de diseño que se hayan tenido siempre que se recargue la página del navegador.
+
+\subsection{Ejecución del algoritmo de búsqueda de rutas}
+Para evaluar la modificación del algoritmo de Dijkstra se utilizó una red de prueba compuesta por varios nodos conectados mediante diferentes caminos alternativos. Se asignaron valores distintos de peso, riesgo y confianza con el objetivo de observar cómo estos factores afectan la selección de la ruta.
+
+En un escenario inicial, el camino con menor peso acumulado no correspondía necesariamente con la ruta seleccionada por el algoritmo modificado, debido a la penalización introducida por enlaces con mayor riesgo o dispositivos con menor confianza.
+
+Los resultados obtenidos permitieron comprobar que la función de costo utilizada modifica el comportamiento del algoritmo tradicional, priorizando rutas con mejores condiciones según los parámetros definidos por el usuario. Tomando como ejemplo el grafo de la Figura 9, se puede evidenciar que con un Dijkstra clásico, el camino más corto entre los nodos A y D seria: $A \rightarrow B \rightarrow D$, y su costo sería 4. Sin embargo, al tener en cuenta el riesgo y la penalización por confianza debido a las cualidades de las aristas y los nodos, su costo total aumenta considerablemente, tanto que es el camino ideal es ahora $A \rightarrow C \rightarrow D$, el cual es resaltado por el sistema. Su costo sería normalmente de 6, pero con las modificaciones termina teniendo un costo total de $6.43$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Img/GrafoDijkstra1.png}
+    \caption{\small Grafo aplicando Dijkstra modificado}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{Img/ResultadoDijkstra1.png}
+    \caption{\small Resultado y análisis de Dijkstra modificado}
+\end{figure}
+
+\subsection{Pruebas del componente criptográfico}
+Se evaluaron los algoritmos de cifrado Afín y Hill mediante mensajes de prueba, verificando que la información cifrada pudiera ser recuperada mediante el proceso inverso utilizando la misma clave.
+
+Para el cifrado Afín se probaron diferentes valores de los parámetros de desplazamiento y multiplicación, verificando que el valor utilizado como clave cumpliera la condición de existencia del inverso modular.
+
+En el caso del cifrado Hill se utilizaron matrices de diferentes dimensiones, comprobando que solamente aquellas matrices cuyo determinante es invertible módulo 26 fueran aceptadas por el sistema.
+
+Los resultados confirmaron que la validación matemática de las claves evita operaciones inválidas y permite realizar correctamente los procesos de cifrado y descifrado.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{Img/CifradoAfinEj.png}
+    \caption{\small Ejemplo de cifrado Afín}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{Img/CifradoHillEj.png}
+    \caption{\small Ejemplo de cifrado Hill}
+\end{figure}
+
+
+\subsection{Casos límite evaluados}
+Además de los escenarios normales, se realizaron pruebas con entradas que podían generar errores en la ejecución:
+
+\begin{itemize}
+    \item Intentar crear un nodo sin identificador: Se cancela la opción de creación y no se agrega nada.
+    \item Intentar crear un nodo sin etiqueta: La etiqueta se completa usando el mismo identificador.
+    \item Crear una arista utilizando un nodo inexistente: No es posible, ya que se pide seleccionar un nodo de inicio y fin.
+    \item Crear una arista sin ingresar el peso: Se toma el caso base con peso 0
+    \item Ejecutar Dijkstra entre nodos sin conexión: El programa simplemente no va a reaccionar, más no hay problemas.
+    \item Introducir una clave inválida en los algoritmos criptográficos: Se resalta un mensaje que dice el dato erroneo ingresado.
+    \item Utilizar una matriz no invertible en el cifrado Hill: Se muestra el mensaje de que la matriz no es invertible.
+\end{itemize}
+
+\section{Limitación encontrada}
+Durante las pruebas se identificó como principal limitación la poca sencillez para editar los valores de los nodos y aristas, así como la imposibilidad de conocer el costo real de tomar un camino en la busqueda de rutas por Dijkstra. 
+
+Debido a que la aplicación está orientada a la visualización interactiva, las pruebas se realizaron sobre grafos pequeños donde el usuario puede observar claramente el comportamiento del algoritmo. Aunque el algoritmo de búsqueda funciona correctamente para estas configuraciones, no se evaluó su rendimiento sobre redes de gran escala con cientos o miles de nodos. En escenarios mayores sería necesario implementar estrategias adicionales de optimización, almacenamiento eficiente de información y posiblemente técnicas de visualización diferentes para mantener la interacción con el usuario.
+
+\section{Discusión}
+Los resultados obtenidos muestran que la aplicación desarrollada cumple con el objetivo principal de integrar conceptos de matemáticas discretas dentro de un entorno interactivo de simulación de redes de comunicación. La representación mediante grafos permitió modelar dispositivos y canales de comunicación de manera flexible, permitiendo al usuario modificar la estructura de la red, observar sus características y analizar cómo dichos cambios afectan la búsqueda de rutas.
+
+En relación con el algoritmo de Dijkstra modificado, los resultados evidencian que la implementación es capaz de encontrar rutas dentro del grafo considerando no solamente el peso tradicional de las aristas, sino también factores adicionales asociados al riesgo de comunicación y al nivel de confianza de los nodos. Esto demuestra que la función de costo propuesta permite representar escenarios donde el camino más corto en términos de distancia no necesariamente corresponde al camino más conveniente bajo criterios de seguridad.
+
+Además, la incorporación de mecanismos de criptografía clásica permitió demostrar la relación entre conceptos matemáticos como aritmética modular, inversos multiplicativos y operaciones matriciales con procesos básicos de protección de información. La aplicación logra cifrar y descifrar mensajes mediante los algoritmos Afín y Hill, mostrando de manera práctica la dependencia entre las propiedades matemáticas de las claves y la posibilidad de recuperar la información original.
+
+Sin embargo, es importante destacar que el sistema desarrollado corresponde a una simulación educativa y no a una implementación de una infraestructura real de comunicaciones. Los valores asociados a riesgo, confianza y costo representan modelos simplificados que permiten experimentar con el comportamiento de una red, pero no contemplan todos los factores presentes en sistemas reales, como latencia, disponibilidad, ataques activos, autenticación de usuarios o protocolos de seguridad actuales.
+
+De manera similar, los algoritmos criptográficos utilizados cumplen una función demostrativa para explicar fundamentos matemáticos, pero no representan mecanismos seguros para proteger información en aplicaciones modernas. Los cifrados implementados pertenecen a la criptografía clásica y presentan limitaciones conocidas frente a métodos actuales utilizados en sistemas reales.
+
+Desde el punto de vista funcional, el proyecto permite realizar edición dinámica del grafo, ejecución del algoritmo de búsqueda, visualización de resultados y aplicación de cifrado sobre mensajes. No obstante, algunas características podrían considerarse implementaciones iniciales, como la gestión persistente de redes, la generación automática de escenarios de prueba y la comparación entre diferentes algoritmos de optimización.
+
+En conjunto, los resultados obtenidos indican que la plataforma cumple adecuadamente con su propósito como herramienta de aprendizaje y experimentación, ya que permite observar de manera visual la interacción entre grafos, algoritmos de optimización y conceptos criptográficos. Las limitaciones identificadas no representan fallos del modelo desarrollado, sino oportunidades de ampliación para una versión posterior con mayor complejidad y acercamiento a escenarios reales.
+
 \section{Conclusiones}
 El desarrollo de este proyecto permitió integrar un par de todos los conceptos fundamentales de las matemáticas discretas denro de una aplicación interactiva orientada al aprendizaje, usando como contexto y simulación, el modelamiento de redes de comunicación. A partir de de la teoría de grafos fue posible representar una red mediante vértices y aristas ponderadas, donde cada dispositivo y canal de comunicación poseen características propias que influyen en la selección de rutas al aplicarse el algoritmo Dijkstra.
 
@@ -371,6 +467,8 @@ Aimer Garcia: Creación de los algoritmos de criptografía Afín y Hill adaptado
 Jair Gomez: Creación del algoritmo de Dijkstra modificado y las modificaciones necesarias para su correcta adaptación. De igual manera, la organización del backend con las rutas necesarias y actualizaciones de frontend para un apartado visual más interactivo y atractivo.
 
 Diego Robayo: Creación de los modelos del grafo. Creación de las rutas principales para hacer uso de los metodos http. Estructuración principal de los modelos JavaScript para la comunicación entre frontend y backend. Herramientas de control y modificación del grafo visual. Desarrollo del artículo.
+
+\section{Anexos}
 
 
 \bibliographystyle{IEEEtran}
@@ -413,6 +511,15 @@ L. Lovász, J. Pelikán, K. Vesztergombi
 \emph{Discrete Mathematics: Elementary and Beyond}.
 Springer. 2000. pp. v
 
+\bibitem{Cesar desplaz}
+S. Simon
+\emph{The Code Book}.
+Anchor, 2000. 
+
+\bibitem{Invertible hill gcd}
+D. R. Stinson
+\emph{Cryptography Theory and Practice}.
+Chapman \& Hall/CRC.2006. pp. 13-37 
 
 \end{thebibliography}
 
