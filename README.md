@@ -91,27 +91,27 @@ Desde la interfaz web será posible crear y administrar grafos, configurar los p
 
 Con la herramienta **Nodo** activa en la parte superior, se puede hacer clic sobre el lienzo del grafo. La aplicación solicitará el ID del nodo, una etiqueta descriptiva y su nivel de confianza. El nodo se crea automáticamente en la posición en donde se hizo clic. Este proceso se puede repetir para cada nodo que se desee agregar a la red.A
 
-![Crear Nodos](docs/images/nodos.png)
+![Crear Nodos](Docs/images/nodos.png)
 
 
 **2. Crear Aristas**
 
 Con la herramienta **Arista** activa, se puede hacer clic primero sobre el nodo de origen y luego sobre el nodo de destino. La aplicación solicitará el peso de la conexión y el nivel de riesgo asociado, al finalizar, la arista se dibuja automáticamente entre los dos nodos seleccionados.
 
-![Crear Aristas](docs/images/aristas.png)
+![Crear Aristas](Docs/images/aristas.png)
 
 
 **3. Seleccionar y eliminar elementos**
 
 Con la herramienta **Seleccionar**, se puede hacer clic sobre un nodo para ver su información completa en el panel lateral, datos como el ID, Etiqueta, Estado, Nivel de confianza, Cantidad de conexiones y Nodos vecinos. Con la herramienta **Eliminar**, dar clic sobre un nodo o arista solicita confirmación y lo elimina de la red.
 
-![Seleccionar y eliminar](docs/images/seleccionryeliminar.png)
+![Seleccionar y eliminar](Docs/images/seleccionryeliminar.png)
 
 **4. Buscar la ruta más segura**
 
 En el panel **Buscar Ruta Segura**, se permite seleccionar un nodo de origen y un nodo de destino en la lista desplegable. Los sliders de confianza y riesgo permiten ajustar qué tanto penaliza el algoritmo los nodos poco confiables y las aristas riesgosas, manejando un rango entre 0 y 5. Al presionar **Buscar Ruta**, se anima paso a paso el proceso de búsqueda del algoritmo sobre el grafo y al finalizar se resalta la ruta óptima encontrada junto con un panel de resultados que incluye la secuencia de nodos para llegar al destino, el costo total y algunas métricas como lo son el peso, el riesgo y la penalización por confianza junto a un análisis de la ruta.A
 
-![Buscar la ruta segura](docs/images/buscar.png)
+![Buscar la ruta segura](Docs/images/buscar.png)
 
 **5. Cifrar un mensaje**
 
@@ -127,8 +127,8 @@ Al ejecutar la búsqueda con el cifrado activado, el resultado incluye adicional
 
 
 
-![Metodo Afín](docs/images/cifrarAfin.png)
-![Metodo Hill](docs/images/cifrarHill.png)
+![Metodo Afín](Docs/images/cifrarAfin.png)
+![Metodo Hill](Docs/images/cifrarHill.png)
 
 ---
 
