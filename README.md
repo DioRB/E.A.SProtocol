@@ -111,7 +111,7 @@ Con la herramienta **Seleccionar**, se puede hacer clic sobre un nodo para ver s
 
 En el panel **Buscar Ruta Segura**, se permite seleccionar un nodo de origen y un nodo de destino en la lista desplegable. Los sliders de confianza y riesgo permiten ajustar qué tanto penaliza el algoritmo los nodos poco confiables y las aristas riesgosas, manejando un rango entre 0 y 5. Al presionar **Buscar Ruta**, se anima paso a paso el proceso de búsqueda del algoritmo sobre el grafo y al finalizar se resalta la ruta óptima encontrada junto con un panel de resultados que incluye la secuencia de nodos para llegar al destino, el costo total y algunas métricas como lo son el peso, el riesgo y la penalización por confianza junto a un análisis de la ruta.A
 
-![Buscar la ruta segura](Docs/images/buscar.jpeg)
+![Buscar la ruta segura](Docs/images/buscar.PNG)
 
 **5. Cifrar un mensaje**
 
@@ -126,8 +126,8 @@ A medida que se escribe el mensaje o se modifica la clave, el sistema muestra un
 Al ejecutar la búsqueda con el cifrado activado, el resultado incluye adicionalmente el mensaje cifrado enviado junto a la ruta, también aparece un botón para descifrar, el cuál permite verificar que el mensaje se puede recuperar correctamente usando la misma clave que se digitó a la hora de cifrar el mensaje.
 
 
-![Metodo Afín](Docs/images/cifrarAfin.jpeg)
-![Metodo Hill](Docs/images/cifrarHill.jpeg)
+![Metodo Afín](Docs/images/cifrarAfin.PNG)
+![Metodo Hill](Docs/images/cifrarHill.PNG)
 
 ---
 
